@@ -10,7 +10,7 @@ Each group links to one resource to start with. Tick concepts as you learn them,
 
 ## Use it
 
-Open the live page: https://and.github.io/ai/
+Open the live page: https://and.github.io/ai-map/
 
 Or download `index.html` and open it in any browser. It's one file, with no build step and no dependencies apart from Google Fonts.
 
