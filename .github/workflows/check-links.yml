@@ -1,0 +1,47 @@
+name: Check links
+
+on:
+  schedule:
+    - cron: "17 4 * * 1" # every Monday, 04:17 UTC
+  workflow_dispatch:
+  push:
+    paths:
+      - index.html
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The resource links live inside the page's script, so pull every URL
+      # out into a plain list for the checker.
+      - name: Collect links from the page
+        run: grep -oE 'https?://[^"'"'"' )<>]+' index.html | sort -u > links.txt
+
+      - name: Check links
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --no-progress
+            --max-retries 3
+            --retry-wait-time 5
+            --accept 200..=299,429
+            --exclude "fonts.googleapis.com|fonts.gstatic.com|github.com/and/ai-map/issues"
+            links.txt
+          fail: false
+
+      # On the weekly run, open an issue listing anything broken.
+      # On a push, the result only shows in the run summary.
+      - name: Open an issue if links are broken
+        if: steps.lychee.outputs.exit_code != 0 && github.event_name != 'push'
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: Broken links found
+          content-filepath: ./lychee/out.md
+          labels: links

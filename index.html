@@ -63,6 +63,10 @@ button.reset.armed { color: var(--use); border-color: var(--use); }
 .concepts input { margin: 3px 0 0; width: 16px; height: 16px; flex: none; accent-color: var(--c); cursor: pointer; }
 .concepts .name { display: block; font-weight: 500; }
 .concepts .note { display: block; font-size: 13px; color: var(--muted); }
+.res { margin: 0 0 6px 26px; font-size: 13px; color: var(--muted); }
+.res a { color: var(--c); text-underline-offset: 2px; text-decoration-thickness: 1px; }
+.res.missing a { color: var(--muted); }
+.howto { margin: 4px 0 0; padding-left: 20px; max-width: 66ch; display: grid; gap: 4px; }
 .concepts input:checked + span .name { text-decoration: line-through; text-decoration-color: var(--muted); color: var(--muted); }
 input:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--c, var(--ink)); outline-offset: 2px; }
 .links { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 14px 0 0; padding: 12px 0 0; border-top: 1px solid var(--line); font-size: 13px; }
@@ -73,8 +77,8 @@ a.tab { display: grid; gap: 2px; padding: 10px 12px 12px 0; text-decoration: non
 a.tab:hover { border-bottom-color: var(--line); }
 a.tab[aria-current="true"] { border-bottom-color: var(--c); }
 .tab-name { font-family: var(--font-display); font-size: 21px; font-weight: 600; color: var(--c); }
-.tab-meta { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.family-lead { margin: 16px 0 0; color: var(--muted); max-width: 66ch; }
+.tab-meta { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; margin-top: 4px; }
+.tab-blurb { font-size: 14px; color: var(--ink); max-width: 34ch; }
 .hint { margin: 16px 0 0; color: var(--muted); }
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 14px; }
 a.card { display: grid; grid-template-rows: auto 1fr auto; gap: 8px; text-decoration: none; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; }
@@ -100,6 +104,7 @@ a.card[aria-current="true"] .card-name { color: var(--c); }
 .related { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; margin-top: 14px; font-size: 13px; color: var(--muted); }
 .related a { color: var(--ink); text-underline-offset: 2px; text-decoration-thickness: 1px; }
 footer { color: var(--muted); font-size: 13px; max-width: 70ch; display: grid; gap: 6px; }
+footer p { margin: 0; }
 footer a { text-underline-offset: 2px; }
 @media (max-width: 900px) {
   .groups { grid-template-columns: 1fr; }
@@ -108,8 +113,10 @@ footer a { text-underline-offset: 2px; }
 @media (max-width: 560px) {
   .basics .concepts { grid-template-columns: 1fr; }
   .intro h1 { font-size: 30px; }
-  .tab-name { font-size: 18px; }
-  .tab-meta { display: none; }
+  .tabs { grid-template-columns: 1fr; }
+  a.tab { padding: 12px 0; border-bottom: 1px solid var(--line); margin-bottom: 0; }
+  a.tab[aria-current="true"] { border-bottom: 2px solid var(--c); }
+  .tab-blurb { max-width: none; }
 }
 @media (prefers-reduced-motion: reduce) { .bar span { transition: none; } }
 </style>
@@ -118,182 +125,254 @@ footer a { text-underline-offset: 2px; }
 <main id="app"><noscript>This page needs JavaScript to show the map.</noscript></main>
 <script>
 (function () {
+  // ---------------------------------------------------------------------------
+  // CONTENT. See MAINTAINING.md before editing.
+  // Resources: [title, url, source, type]. Types: Article, Video, Course, Guide, Docs, Tool, Report.
+  // A concept's resource is R.<key>, or null when there is no good beginner link yet.
+  // ---------------------------------------------------------------------------
+  var R = {
+    ibmAiVsMl: ["AI vs. machine learning vs. deep learning vs. neural networks", "https://www.ibm.com/think/topics/ai-vs-machine-learning-vs-deep-learning-vs-neural-networks", "IBM", "Article"],
+    ibmInference: ["What is AI inference?", "https://www.ibm.com/think/topics/ai-inference", "IBM", "Article"],
+    ibmContext: ["What is a context window?", "https://www.ibm.com/think/topics/context-window", "IBM", "Article"],
+    ibmHallucinations: ["What are AI hallucinations?", "https://www.ibm.com/think/topics/ai-hallucinations", "IBM", "Article"],
+    ibmPrivacy: ["Exploring privacy issues in the age of AI", "https://www.ibm.com/think/topics/ai-privacy", "IBM", "Article"],
+    ibmMultimodal: ["What is multimodal AI?", "https://www.ibm.com/think/topics/multimodal-ai", "IBM", "Article"],
+    ibmMcp: ["What is Model Context Protocol (MCP)?", "https://www.ibm.com/think/topics/model-context-protocol", "IBM", "Article"],
+    ibmAgents: ["What are AI agents?", "https://www.ibm.com/think/topics/ai-agents", "IBM", "Article"],
+    ibmBias: ["What is AI bias?", "https://www.ibm.com/think/topics/ai-bias", "IBM", "Article"],
+    ibmAlignment: ["What is AI alignment?", "https://www.ibm.com/think/topics/ai-alignment", "IBM", "Article"],
+    ibmLabeling: ["What is data labeling?", "https://www.ibm.com/think/topics/data-labeling", "IBM", "Article"],
+    ibmQuantization: ["What is quantization?", "https://www.ibm.com/think/topics/quantization", "IBM", "Article"],
+    ibmDiffusion: ["What are diffusion models?", "https://www.ibm.com/think/topics/diffusion-models", "IBM", "Article"],
+    ibmFineTuning: ["What is fine-tuning?", "https://www.ibm.com/think/topics/fine-tuning", "IBM", "Article"],
+    mollickRightNow: ["Using AI right now: a quick guide", "https://www.oneusefulthing.org/p/using-ai-right-now-a-quick-guide", "Ethan Mollick", "Article"],
+    mollickPrompting: ["Getting started with AI: good enough prompting", "https://www.oneusefulthing.org/p/getting-started-with-ai-good-enough", "Ethan Mollick", "Article"],
+    mollick15: ["15 times to use AI, and 5 not to", "https://www.oneusefulthing.org/p/15-times-to-use-ai-and-5-not-to", "Ethan Mollick", "Article"],
+    learnPrompting: ["Prompt engineering guide for beginners", "https://learnprompting.org/docs/introduction", "Learn Prompting", "Guide"],
+    stanfordChatbot: ["Be careful what you tell your AI chatbot", "https://hai.stanford.edu/news/be-careful-what-you-tell-your-ai-chatbot", "Stanford HAI", "Article"],
+    ftcVoice: ["Scammers use AI to enhance their family emergency schemes", "https://consumer.ftc.gov/consumer-alerts/2023/03/scammers-use-ai-enhance-their-family-emergency-schemes", "US FTC", "Article"],
+    anthropicAcademy: ["Anthropic Academy", "https://www.anthropic.com/learn", "Anthropic", "Course"],
+    promptLibrary: ["Prompt library", "https://docs.anthropic.com/en/prompt-library/library", "Anthropic", "Docs"],
+    twoMinutePapers: ["Two Minute Papers", "https://www.youtube.com/@TwoMinutePapers", "YouTube", "Video"],
+    elevenLabs: ["ElevenLabs documentation", "https://elevenlabs.io/docs", "ElevenLabs", "Docs"],
+    copyrightOffice: ["Copyright and artificial intelligence", "https://www.copyright.gov/ai/", "US Copyright Office", "Report"],
+    contentCredentials: ["Content Credentials", "https://contentcredentials.org/", "C2PA", "Tool"],
+    pairGuidebook: ["People + AI Guidebook", "https://pair.withgoogle.com/guidebook/", "Google PAIR", "Guide"],
+    pairUserNeeds: ["User needs and defining success", "https://pair.withgoogle.com/chapter/user-needs/", "Google PAIR", "Guide"],
+    pairErrors: ["Errors and graceful failure", "https://pair.withgoogle.com/chapter/errors-failing/", "Google PAIR", "Guide"],
+    pairExplain: ["Explainability and trust", "https://pair.withgoogle.com/chapter/explainability-trust/", "Google PAIR", "Guide"],
+    yanPatterns: ["Patterns for building LLM-based systems and products", "https://eugeneyan.com/writing/llm-patterns/", "Eugene Yan", "Article"],
+    hamelEvals: ["Your AI product needs evals", "https://hamel.dev/blog/posts/evals/", "Hamel Husain", "Article"],
+    hamelFaq: ["LLM evals FAQ", "https://hamel.dev/blog/posts/evals-faq/", "Hamel Husain", "Article"],
+    hamelField: ["A field guide to rapidly improving AI products", "https://hamel.dev/blog/posts/field-guide/", "Hamel Husain", "Article"],
+    aiForEveryone: ["AI For Everyone", "https://www.coursera.org/learn/ai-for-everyone", "Andrew Ng, Coursera", "Course"],
+    elementsOfAi: ["Elements of AI", "https://www.elementsofai.com/", "University of Helsinki", "Course"],
+    economicIndex: ["The Anthropic Economic Index", "https://www.anthropic.com/economic-index", "Anthropic", "Report"],
+    nistRmf: ["AI Risk Management Framework", "https://www.nist.gov/itl/ai-risk-management-framework", "NIST", "Guide"],
+    nistGenAi: ["Generative AI profile", "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence", "NIST", "Guide"],
+    euSummary: ["High-level summary of the AI Act", "https://artificialintelligenceact.eu/high-level-summary/", "Future of Life Institute", "Article"],
+    euExplorer: ["EU AI Act explorer and guides", "https://artificialintelligenceact.eu/", "Future of Life Institute", "Guide"],
+    owaspTop10: ["OWASP Top 10 for LLM applications", "https://genai.owasp.org/llm-top-10/", "OWASP", "Guide"],
+    owaspInjection: ["LLM01: Prompt injection", "https://genai.owasp.org/llmrisk/llm01-prompt-injection/", "OWASP", "Guide"],
+    redTeaming: ["Red teaming LLM applications", "https://www.deeplearning.ai/short-courses/red-teaming-llm-applications/", "DeepLearning.AI", "Course"],
+    willisonSchemas: ["Structured data extraction using LLM schemas", "https://simonwillison.net/2025/Feb/28/llm-schemas/", "Simon Willison", "Article"],
+    contextEng: ["Effective context engineering for AI agents", "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents", "Anthropic", "Article"],
+    mcpCourse: ["MCP course", "https://huggingface.co/learn/mcp-course/", "Hugging Face", "Course"],
+    pineconeRag: ["Retrieval-augmented generation", "https://www.pinecone.io/learn/retrieval-augmented-generation/", "Pinecone", "Guide"],
+    effectiveAgents: ["Building effective AI agents", "https://www.anthropic.com/research/building-effective-agents", "Anthropic", "Article"],
+    agentMemory: ["Agent memory: building memory-aware agents", "https://www.deeplearning.ai/short-courses/agent-memory-building-memory-aware-agents/", "DeepLearning.AI", "Course"],
+    phoenix: ["Arize Phoenix", "https://arize.com/docs/phoenix", "Arize", "Docs"],
+    promptCaching: ["Prompt caching", "https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching", "Anthropic", "Docs"],
+    fastai: ["Practical deep learning for coders", "https://course.fast.ai/", "fast.ai", "Course"],
+    statquest: ["StatQuest", "https://www.youtube.com/@statquest", "YouTube", "Video"],
+    ollama: ["Ollama", "https://docs.ollama.com/", "Ollama", "Docs"],
+    threeBlue: ["3Blue1Brown", "https://www.youtube.com/@3blue1brown", "YouTube", "Video"],
+    karpathy: ["Andrej Karpathy", "https://www.youtube.com/@AndrejKarpathy", "YouTube", "Video"],
+    karpathyIntro: ["Intro to large language models", "https://www.youtube.com/watch?v=zjkBMFhNj_g", "Andrej Karpathy", "Video"],
+    karpathyDeep: ["Deep dive into LLMs like ChatGPT", "https://www.youtube.com/watch?v=7xTGNNLPyMI", "Andrej Karpathy", "Video"],
+    illustratedTransformer: ["The illustrated transformer", "https://jalammar.github.io/illustrated-transformer/", "Jay Alammar", "Article"],
+    whyWeThink: ["Why we think", "https://lilianweng.github.io/posts/2025-05-01-thinking/", "Lilian Weng", "Article"],
+    raschka: ["The state of LLMs 2025", "https://magazine.sebastianraschka.com/p/state-of-llms-2025", "Sebastian Raschka", "Article"],
+    mappingMind: ["Mapping the mind of a large language model", "https://www.anthropic.com/research/mapping-mind-language-model", "Anthropic", "Article"],
+    simpleTerms: ["How AI works in super simple terms", "https://www.youtube.com/watch?v=q-BiW5srMFQ", "YouTube", "Video"],
+    jargon: ["Mastering AI jargon", "https://www.youtube.com/watch?v=q4G6X09NEu4", "YouTube", "Video"]
+  };
+
+  // Update this whenever you finish a review (see MAINTAINING.md).
+  var REVIEWED = "November 2026";
+
   var BASICS = {
     name: "What everyone should know",
     items: [
-      ["ai-ml-llm", "AI, machine learning and LLMs", "AI is the field, machine learning learns from data, and LLMs are machine-learning models for language."],
-      ["training-inference", "Training vs using a model", "Training builds a model once. Inference is every time you use it."],
-      ["tokens-context", "Tokens and the context window", "Models read text in small chunks and can only hold so much at once."],
-      ["hallucination", "Why models make things up", "They predict likely words, so a confident answer can still be wrong."],
-      ["prompting", "Prompting", "Clear instructions, context and examples get far better results."],
-      ["data-sharing", "What happens to what you share", "Depending on the product, what you type may be stored or used for training."]
+      ["ai-ml-llm", "AI, machine learning and LLMs", "AI is the field, machine learning learns from data, and LLMs are machine-learning models for language.", R.ibmAiVsMl],
+      ["training-inference", "Training vs using a model", "Training builds a model once. Inference is every time you use it.", R.ibmInference],
+      ["tokens-context", "Tokens and the context window", "Models read text in small chunks and can only hold so much at once.", R.ibmContext],
+      ["hallucination", "Why models make things up", "They predict likely words, so a confident answer can still be wrong.", R.ibmHallucinations],
+      ["prompting", "Prompting", "Clear instructions, context and examples get far better results.", R.learnPrompting],
+      ["data-sharing", "What happens to what you share", "Depending on the product, what you type may be stored or used for training.", R.ibmPrivacy]
     ],
-    links: [
-      ["How AI works in super simple terms (video)", "https://www.youtube.com/watch?v=q-BiW5srMFQ"],
-      ["Mastering AI jargon (video)", "https://www.youtube.com/watch?v=q4G6X09NEu4"],
-      ["Elements of AI (free course)", "https://www.elementsofai.com/"]
-    ]
+    links: [R.simpleTerms, R.jargon, R.elementsOfAi]
   };
 
   var FAMILIES = [
-    { id: "build", name: "Build AI", blurb: "Making AI systems and models, from apps on top of models to the models themselves.", color: "var(--build)", personas: [
-      { id: "ai-engineer", name: "AI engineer", question: "How do I build reliable products on top of existing models?", who: "Software engineers building apps, features and agents with model APIs.", groups: [
-        { name: "Building blocks", items: [
-          ["apis-structured", "Model APIs and structured output", "Call a model from code and get data back, not prose."],
-          ["context-eng", "Context engineering", "Choosing exactly what the model sees on each call."],
-          ["tool-use", "Tool use and MCP", "Letting models call functions, APIs and other systems."]
-        ] },
-        { name: "Systems", items: [
-          ["rag", "Retrieval (RAG) and embeddings", "Fetching the right documents so answers are grounded in your data."],
-          ["agents", "Agents and workflows", "Workflows follow a fixed path. Agents choose their own next step."],
-          ["agent-memory", "Memory", "What a system keeps between conversations, and how it recalls it."]
-        ] },
-        { name: "Reliability", items: [
-          ["evals-eng", "Evals and error analysis", "Study real failures, then test for them on every change."],
-          ["observability", "Tracing and observability", "Seeing every step a system took when something goes wrong."],
-          ["cost-latency", "Cost, latency and fallbacks", "Keep it fast and affordable, and fail gracefully."]
-        ] }
-      ], links: [["Building Effective AI Agents (Anthropic)", "https://www.anthropic.com/research/building-effective-agents"], ["A Field Guide to Rapidly Improving AI Products (Hamel Husain)", "https://hamel.dev/blog/posts/field-guide/"], ["Hugging Face Agents Course", "https://huggingface.co/learn/agents-course/"]], related: ["product", "ml-engineer", "safety"] },
-      { id: "ml-engineer", name: "ML engineer and data scientist", question: "How do I train, adapt and run models myself?", who: "People who work with data and models directly, from analysis to deployment.", groups: [
-        { name: "Data", items: [
-          ["datasets", "Collecting and cleaning data", "Most of a model's quality comes from its data, not the algorithm."],
-          ["data-labelling", "Labelling and synthetic data", "Creating training examples by hand or with other models."],
-          ["splits", "Train/test splits and leakage", "Test on data the model hasn't seen, or the results mislead you."]
-        ] },
-        { name: "Models", items: [
-          ["classical-ml", "Classical machine learning", "Regression, decision trees and clustering still solve many problems best."],
-          ["fine-tuning", "Fine-tuning and LoRA", "Adapting a pretrained model to your task with less compute."],
-          ["metrics", "Evaluation metrics", "Accuracy, precision and recall, and when each one misleads."]
-        ] },
-        { name: "Running models", items: [
-          ["serving", "Serving and inference", "Running models behind an API, with tools like vLLM or Ollama."],
-          ["quantisation", "Quantisation and optimisation", "Smaller, faster models with little loss in quality."],
-          ["mlops", "MLOps", "Versioning, monitoring and retraining models in production."]
-        ] }
-      ], links: [["Practical Deep Learning for Coders (fast.ai)", "https://course.fast.ai/"], ["StatQuest (videos)", "https://www.youtube.com/@statquest"], ["Hugging Face LLM Course", "https://huggingface.co/learn/llm-course/chapter1/1"]], related: ["ai-engineer", "researcher"] },
+    { id: "build", name: "Build AI", blurb: "Making AI, from the models themselves to the apps built on them.", color: "var(--build)", personas: [
       { id: "researcher", name: "Researcher", question: "How do models work inside, and how do we make them better?", who: "Students and scientists studying how models learn, reason and fail.", groups: [
         { name: "Foundations", items: [
-          ["math", "Linear algebra, probability, calculus", "The mathematics every model is built from."],
-          ["backprop", "Neural networks and backpropagation", "How networks learn, by nudging weights to reduce error."],
-          ["transformers", "Attention and transformers", "The architecture behind today's language models."]
+          ["math", "Linear algebra, probability, calculus", "The mathematics every model is built from.", R.threeBlue],
+          ["backprop", "Neural networks and backpropagation", "How networks learn, by nudging weights to reduce error.", R.karpathy],
+          ["transformers", "Attention and transformers", "The architecture behind today's language models.", R.illustratedTransformer]
         ] },
         { name: "Training at scale", items: [
-          ["pretraining", "Pretraining and scaling laws", "Bigger models and more data improve results predictably, up to a point."],
-          ["post-training", "Post-training: RLHF and DPO", "Shaping a raw model into a helpful assistant."],
-          ["reasoning", "Reasoning and test-time compute", "Letting models think longer to solve harder problems."]
+          ["pretraining", "Pretraining and scaling laws", "Bigger models and more data improve results predictably, up to a point.", R.karpathyIntro],
+          ["post-training", "Post-training: RLHF and DPO", "Shaping a raw model into a helpful assistant.", R.karpathyDeep],
+          ["reasoning", "Reasoning and test-time compute", "Letting models think longer to solve harder problems.", R.whyWeThink]
         ] },
         { name: "Research practice", items: [
-          ["papers", "Reading papers", "Following new work, reproducing results and judging claims."],
-          ["benchmarks", "Benchmarks and their limits", "What a score measures, and what it misses."],
-          ["interpretability", "Interpretability", "Looking inside models to see which features they use."]
+          ["papers", "Reading papers", "Following new work, reproducing results and judging claims.", R.raschka],
+          ["benchmarks", "Benchmarks and their limits", "What a score measures, and what it misses.", null],
+          ["interpretability", "Interpretability", "Looking inside models to see which features they use.", R.mappingMind]
         ] }
-      ], links: [["3Blue1Brown (videos)", "https://www.youtube.com/@3blue1brown"], ["Andrej Karpathy (videos)", "https://www.youtube.com/@AndrejKarpathy"], ["Mapping the Mind of a Large Language Model (Anthropic)", "https://www.anthropic.com/research/mapping-mind-language-model"]], related: ["ml-engineer", "safety"] }
+      ], links: [R.threeBlue, R.karpathy, R.mappingMind], related: ["ml-engineer", "safety"] },
+      { id: "ml-engineer", name: "ML engineer and data scientist", question: "How do I train, adapt and run models myself?", who: "People who work with data and models directly, from analysis to deployment.", groups: [
+        { name: "Data", items: [
+          ["datasets", "Collecting and cleaning data", "Most of a model's quality comes from its data, not the algorithm.", R.fastai],
+          ["data-labelling", "Labelling and synthetic data", "Creating training examples by hand or with other models.", R.ibmLabeling],
+          ["splits", "Train/test splits and leakage", "Test on data the model hasn't seen, or the results mislead you.", R.statquest]
+        ] },
+        { name: "Models", items: [
+          ["classical-ml", "Classical machine learning", "Regression, decision trees and clustering still solve many problems best.", R.statquest],
+          ["fine-tuning", "Fine-tuning and LoRA", "Adapting a pretrained model to your task with less compute.", R.ibmFineTuning],
+          ["metrics", "Evaluation metrics", "Accuracy, precision and recall, and when each one misleads.", R.statquest]
+        ] },
+        { name: "Running models", items: [
+          ["serving", "Serving and inference", "Running models behind an API, with tools like vLLM or Ollama.", R.ollama],
+          ["quantisation", "Quantisation and optimisation", "Smaller, faster models with little loss in quality.", R.ibmQuantization],
+          ["mlops", "MLOps", "Versioning, monitoring and retraining models in production.", null]
+        ] }
+      ], links: [R.fastai, R.statquest], related: ["researcher", "ai-engineer"] },
+      { id: "ai-engineer", name: "AI engineer", question: "How do I build reliable products on top of existing models?", who: "Software engineers building apps, features and agents with model APIs.", groups: [
+        { name: "Building blocks", items: [
+          ["apis-structured", "Model APIs and structured output", "Call a model from code and get data back, not prose.", R.willisonSchemas],
+          ["context-eng", "Context engineering", "Choosing exactly what the model sees on each call.", R.contextEng],
+          ["tool-use", "Tool use and MCP", "Letting models call functions, APIs and other systems.", R.mcpCourse]
+        ] },
+        { name: "Systems", items: [
+          ["rag", "Retrieval (RAG) and embeddings", "Fetching the right documents so answers are grounded in your data.", R.pineconeRag],
+          ["agents", "Agents and workflows", "Workflows follow a fixed path. Agents choose their own next step.", R.effectiveAgents],
+          ["agent-memory", "Memory", "What a system keeps between conversations, and how it recalls it.", R.agentMemory]
+        ] },
+        { name: "Reliability", items: [
+          ["evals-eng", "Evals and error analysis", "Study real failures, then test for them on every change.", R.hamelField],
+          ["observability", "Tracing and observability", "Seeing every step a system took when something goes wrong.", R.phoenix],
+          ["cost-latency", "Cost, latency and fallbacks", "Keep it fast and affordable, and fail gracefully.", R.promptCaching]
+        ] }
+      ], links: [R.effectiveAgents, R.hamelField], related: ["ml-engineer", "product", "safety"] }
     ] },
     { id: "shape", name: "Shape AI", blurb: "Deciding what gets built, how it behaves and what rules it follows.", color: "var(--shape)", personas: [
       { id: "product", name: "Product and design", question: "What should we build with AI, and how will people experience it?", who: "Product managers, designers and founders deciding which AI features to ship.", groups: [
         { name: "Finding the right problem", items: [
-          ["ai-fit", "What AI is good and bad at", "It suits fuzzy language tasks, and often not exact, high-stakes ones."],
-          ["ai-vs-rules", "AI or plain software?", "If simple rules solve the problem, they're cheaper and more predictable."],
-          ["build-buy", "Build, buy or call an API", "Most products start on a hosted model, not one of their own."]
+          ["ai-fit", "What AI is good and bad at", "It suits fuzzy language tasks, and often not exact, high-stakes ones.", R.pairUserNeeds],
+          ["ai-vs-rules", "AI or plain software?", "If simple rules solve the problem, they're cheaper and more predictable.", R.pairUserNeeds],
+          ["build-buy", "Build, buy or call an API", "Most products start on a hosted model, not one of their own.", R.yanPatterns]
         ] },
         { name: "Designing for AI", items: [
-          ["design-for-errors", "Designing for wrong answers", "Plan how people notice, correct and recover from mistakes."],
-          ["show-sources", "Showing sources and uncertainty", "Citations and confidence cues help people judge how far to trust it."],
-          ["human-control", "Keeping people in control", "Previews, undo and approval before AI acts on someone's behalf."]
+          ["design-for-errors", "Designing for wrong answers", "Plan how people notice, correct and recover from mistakes.", R.pairErrors],
+          ["show-sources", "Showing sources and uncertainty", "Citations and confidence cues help people judge how far to trust it.", R.pairExplain],
+          ["human-control", "Keeping people in control", "Previews, undo and approval before AI acts on someone's behalf.", R.pairGuidebook]
         ] },
         { name: "Measuring quality", items: [
-          ["define-good", "Defining what good looks like", "Write down quality criteria before you judge outputs."],
-          ["evals-product", "Evals", "Repeatable tests that show whether a change made things better."],
-          ["unit-economics", "Cost and speed per use", "Every AI call costs money and time, and both shape the design."]
+          ["define-good", "Defining what good looks like", "Write down quality criteria before you judge outputs.", R.hamelEvals],
+          ["evals-product", "Evals", "Repeatable tests that show whether a change made things better.", R.hamelFaq],
+          ["unit-economics", "Cost and speed per use", "Every AI call costs money and time, and both shape the design.", null]
         ] }
-      ], links: [["People + AI Guidebook (Google PAIR)", "https://pair.withgoogle.com/guidebook/"], ["Your AI Product Needs Evals (Hamel Husain)", "https://hamel.dev/blog/posts/evals/"], ["Patterns for LLM systems and products (Eugene Yan)", "https://eugeneyan.com/writing/llm-patterns/"]], related: ["ai-engineer", "leader", "safety"] },
+      ], links: [R.pairGuidebook, R.hamelEvals], related: ["ai-engineer", "leader", "safety"] },
       { id: "leader", name: "Business leader", question: "Where does AI create value for us, and what are the risks?", who: "Founders, executives and managers making decisions about adopting AI.", groups: [
         { name: "Strategy", items: [
-          ["value", "Where AI creates value", "Lower costs, new products or faster decisions, and how to tell which."],
-          ["make-or-buy", "Build, buy or partner", "Off-the-shelf tools, custom builds, or vendors that do both."],
-          ["tco", "Total cost of ownership", "Licences and usage fees, plus integration, review and upkeep."]
+          ["value", "Where AI creates value", "Lower costs, new products or faster decisions, and how to tell which.", R.aiForEveryone],
+          ["make-or-buy", "Build, buy or partner", "Off-the-shelf tools, custom builds, or vendors that do both.", null],
+          ["tco", "Total cost of ownership", "Licences and usage fees, plus integration, review and upkeep.", null]
         ] },
         { name: "People and change", items: [
-          ["upskilling", "Upskilling teams", "Training people to use AI well beats buying more tools."],
-          ["roles-change", "How roles and workflows change", "Which tasks move to AI, and what people do instead."],
-          ["pilots", "Pilots and measuring return", "Small, measured experiments before a company-wide rollout."]
+          ["upskilling", "Upskilling teams", "Training people to use AI well beats buying more tools.", R.elementsOfAi],
+          ["roles-change", "How roles and workflows change", "Which tasks move to AI, and what people do instead.", R.economicIndex],
+          ["pilots", "Pilots and measuring return", "Small, measured experiments before a company-wide rollout.", R.aiForEveryone]
         ] },
         { name: "Risk and governance", items: [
-          ["vendor-risk", "Vendor and data risk", "Where your data goes, and what happens if a vendor changes course."],
-          ["usage-policy", "Acceptable-use policy", "Clear rules on which tools, which data, and who approves."],
-          ["regulation-biz", "Regulation that applies to you", "Rules like the EU AI Act depend on your use case and market."]
+          ["vendor-risk", "Vendor and data risk", "Where your data goes, and what happens if a vendor changes course.", R.nistGenAi],
+          ["usage-policy", "Acceptable-use policy", "Clear rules on which tools, which data, and who approves.", R.nistRmf],
+          ["regulation-biz", "Regulation that applies to you", "Rules like the EU AI Act depend on your use case and market.", R.euSummary]
         ] }
-      ], links: [["AI For Everyone (Andrew Ng)", "https://www.coursera.org/learn/ai-for-everyone"], ["NIST AI Risk Management Framework", "https://www.nist.gov/itl/ai-risk-management-framework"], ["EU AI Act explorer and summaries", "https://artificialintelligenceact.eu/"]], related: ["product", "professional", "safety"] },
+      ], links: [R.aiForEveryone, R.nistRmf, R.euExplorer], related: ["product", "professional", "safety"] },
       { id: "safety", name: "Safety, ethics and policy", question: "How do we make AI safe, fair and accountable?", who: "Policy makers, lawyers, trust and safety teams, journalists and concerned citizens.", groups: [
         { name: "Harms", items: [
-          ["bias", "Bias and fairness", "Models can reflect and amplify unfair patterns in their data."],
-          ["misinformation", "Misinformation and deepfakes", "Cheap, convincing fakes change how we judge evidence."],
-          ["misuse", "Misuse and dual use", "The same capability can help or harm, depending on who uses it."]
+          ["bias", "Bias and fairness", "Models can reflect and amplify unfair patterns in their data.", R.ibmBias],
+          ["misinformation", "Misinformation and deepfakes", "Cheap, convincing fakes change how we judge evidence.", R.contentCredentials],
+          ["misuse", "Misuse and dual use", "The same capability can help or harm, depending on who uses it.", null]
         ] },
         { name: "Security", items: [
-          ["prompt-injection", "Prompt injection", "Hidden instructions in content can hijack an AI system."],
-          ["data-leakage", "Data leakage", "Private data can escape through prompts, outputs or tools."],
-          ["red-teaming", "Red teaming", "Deliberately attacking a system to find failures before others do."]
+          ["prompt-injection", "Prompt injection", "Hidden instructions in content can hijack an AI system.", R.owaspInjection],
+          ["data-leakage", "Data leakage", "Private data can escape through prompts, outputs or tools.", R.owaspTop10],
+          ["red-teaming", "Red teaming", "Deliberately attacking a system to find failures before others do.", R.redTeaming]
         ] },
         { name: "Governance", items: [
-          ["risk-frameworks", "Risk frameworks", "Structured ways to identify, measure and manage AI risk."],
-          ["ai-law", "AI law and regulation", "The EU AI Act and other rules set duties by level of risk."],
-          ["alignment", "Alignment and interpretability", "Research on making models do what we intend, and seeing why they don't."]
+          ["risk-frameworks", "Risk frameworks", "Structured ways to identify, measure and manage AI risk.", R.nistRmf],
+          ["ai-law", "AI law and regulation", "The EU AI Act and other rules set duties by level of risk.", R.euExplorer],
+          ["alignment", "Alignment and interpretability", "Research on making models do what we intend, and seeing why they don't.", R.ibmAlignment]
         ] }
-      ], links: [["OWASP Top 10 for LLM Applications", "https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/"], ["NIST AI Risk Management Framework", "https://www.nist.gov/itl/ai-risk-management-framework"], ["The lethal trifecta for AI agents (Simon Willison)", "https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/"]], related: ["leader", "researcher", "ai-engineer"] }
+      ], links: [R.owaspTop10, R.nistRmf], related: ["leader", "researcher", "ai-engineer"] }
     ] },
     { id: "use", name: "Use AI", blurb: "Getting things done with AI tools. No code needed.", color: "var(--use)", personas: [
       { id: "everyday", name: "Everyday user", question: "How can AI help me day to day, and when can I trust it?", who: "Anyone using chat assistants to learn, write, plan or just explore.", groups: [
         { name: "Getting started", items: [
-          ["choose-assistant", "Choosing an assistant", "Chat apps differ in strengths, privacy and price."],
-          ["follow-ups", "Asking follow-up questions", "Treat it as a conversation and refine, rather than starting over."],
-          ["multimodal-input", "Files, photos and voice", "Many assistants can read documents, look at images and talk."]
+          ["choose-assistant", "Choosing an assistant", "Chat apps differ in strengths, privacy and price.", R.mollickRightNow],
+          ["follow-ups", "Asking follow-up questions", "Treat it as a conversation and refine, rather than starting over.", R.mollickPrompting],
+          ["multimodal-input", "Files, photos and voice", "Many assistants can read documents, look at images and talk.", R.ibmMultimodal]
         ] },
         { name: "Everyday uses", items: [
-          ["learning", "Learning and explanations", "Ask for simpler words, examples or a quiz on any topic."],
-          ["writing-help", "Writing and editing", "Drafts, rewrites and tone changes, with your own voice kept."],
-          ["planning", "Planning and research", "Trips, meals, budgets and comparisons, with the facts checked."]
+          ["learning", "Learning and explanations", "Ask for simpler words, examples or a quiz on any topic.", R.mollick15],
+          ["writing-help", "Writing and editing", "Drafts, rewrites and tone changes, with your own voice kept.", R.mollickPrompting],
+          ["planning", "Planning and research", "Trips, meals, budgets and comparisons, with the facts checked.", R.mollickRightNow]
         ] },
         { name: "Staying safe", items: [
-          ["verify", "Checking answers", "Ask for sources and verify anything important somewhere else."],
-          ["deepfakes", "Spotting deepfakes and scams", "AI makes fake voices, images and messages cheap to produce."],
-          ["privacy-settings", "Privacy settings", "Know what the app keeps, and turn off what you don't want kept."]
+          ["verify", "Checking answers", "Ask for sources and verify anything important somewhere else.", R.ibmHallucinations],
+          ["deepfakes", "Spotting deepfakes and scams", "AI makes fake voices, images and messages cheap to produce.", R.ftcVoice],
+          ["privacy-settings", "Privacy settings", "Know what the app keeps, and turn off what you don't want kept.", R.stanfordChatbot]
         ] }
-      ], links: [["Learn Prompting", "https://learnprompting.org/"], ["Elements of AI", "https://www.elementsofai.com/"]], related: ["professional", "creator", "safety"] },
+      ], links: [R.mollickRightNow, R.elementsOfAi], related: ["professional", "creator", "safety"] },
       { id: "professional", name: "Professional at work", question: "How do I use AI to do my job better?", who: "People in any role bringing AI into documents, data, meetings and email.", groups: [
         { name: "Daily work", items: [
-          ["summarise-docs", "Drafting and summarising", "Turn long reading into briefs, and rough notes into drafts."],
-          ["data-analysis", "Analysing data", "Ask questions of a spreadsheet and get charts without formulas."],
-          ["meetings", "Meeting notes and follow-ups", "Transcripts, decisions and action items captured for you."]
+          ["summarise-docs", "Drafting and summarising", "Turn long reading into briefs, and rough notes into drafts.", R.mollick15],
+          ["data-analysis", "Analysing data", "Ask questions of a spreadsheet and get charts without formulas.", R.anthropicAcademy],
+          ["meetings", "Meeting notes and follow-ups", "Transcripts, decisions and action items captured for you.", null]
         ] },
         { name: "Workflows", items: [
-          ["connectors", "Connecting AI to your apps", "Connectors and MCP let assistants work with your email, calendar and files."],
-          ["automation", "No-code automation and agents", "Hand off multi-step tasks that run while you do other work."],
-          ["reusable-prompts", "Reusable prompts and skills", "Save instructions that work, so the whole team gets consistent results."]
+          ["connectors", "Connecting AI to your apps", "Connectors and MCP let assistants work with your email, calendar and files.", R.ibmMcp],
+          ["automation", "No-code automation and agents", "Hand off multi-step tasks that run while you do other work.", R.ibmAgents],
+          ["reusable-prompts", "Reusable prompts and skills", "Save instructions that work, so the whole team gets consistent results.", R.promptLibrary]
         ] },
         { name: "Working responsibly", items: [
-          ["ai-policy", "Your company's AI policy", "Which tools are approved, and what data can go into them."],
-          ["review-output", "Reviewing before you send", "You stay accountable for anything AI helped you produce."],
-          ["disclose", "Being open about AI use", "When colleagues and clients should know AI was involved."]
+          ["ai-policy", "Your company's AI policy", "Which tools are approved, and what data can go into them.", null],
+          ["review-output", "Reviewing before you send", "You stay accountable for anything AI helped you produce.", R.mollick15],
+          ["disclose", "Being open about AI use", "When colleagues and clients should know AI was involved.", null]
         ] }
-      ], links: [["Anthropic Academy (free courses)", "https://www.anthropic.com/learn"], ["AI For Everyone (Andrew Ng)", "https://www.coursera.org/learn/ai-for-everyone"]], related: ["everyday", "leader", "product"] },
+      ], links: [R.anthropicAcademy, R.aiForEveryone], related: ["everyday", "leader", "product"] },
       { id: "creator", name: "Creator", question: "How do I make images, video, music and writing with AI?", who: "Artists, writers, designers, marketers and anyone who makes media.", groups: [
         { name: "Generative media", items: [
-          ["image-gen", "Image generation and editing", "Create or change images from a text description."],
-          ["video-gen", "Video generation", "Short clips from text or images, improving quickly."],
-          ["audio-gen", "Voice and music", "Synthetic voices, voice cloning and generated music."]
+          ["image-gen", "Image generation and editing", "Create or change images from a text description.", R.ibmDiffusion],
+          ["video-gen", "Video generation", "Short clips from text or images, improving quickly.", R.twoMinutePapers],
+          ["audio-gen", "Voice and music", "Synthetic voices, voice cloning and generated music.", R.elevenLabs]
         ] },
         { name: "Craft", items: [
-          ["describe-style", "Describing style and composition", "Precise words for light, mood and framing steer the result."],
-          ["iterate", "Iterating and editing", "Generate many, pick the best, then refine. It's rarely right first time."],
-          ["mix-own-work", "Mixing AI with your own work", "Use AI for parts of the process and keep your hand in the rest."]
+          ["describe-style", "Describing style and composition", "Precise words for light, mood and framing steer the result.", R.learnPrompting],
+          ["iterate", "Iterating and editing", "Generate many, pick the best, then refine. It's rarely right first time.", R.mollickPrompting],
+          ["mix-own-work", "Mixing AI with your own work", "Use AI for parts of the process and keep your hand in the rest.", null]
         ] },
         { name: "Rights and credit", items: [
-          ["copyright", "Copyright and AI", "Who owns AI-assisted work, and what training on others' work means."],
-          ["licensing", "Licensing and commercial use", "Check each tool's terms before you sell what you make."],
-          ["labelling", "Labelling AI-made content", "Content Credentials show how a piece of media was made."]
+          ["copyright", "Copyright and AI", "Who owns AI-assisted work, and what training on others' work means.", R.copyrightOffice],
+          ["licensing", "Licensing and commercial use", "Check each tool's terms before you sell what you make.", null],
+          ["labelling", "Labelling AI-made content", "Content Credentials show how a piece of media was made.", R.contentCredentials]
         ] }
-      ], links: [["Copyright and AI (US Copyright Office)", "https://www.copyright.gov/ai/"], ["Content Credentials", "https://contentcredentials.org/"], ["Two Minute Papers (videos on new models)", "https://www.youtube.com/@TwoMinutePapers"]], related: ["everyday", "safety", "product"] }
+      ], links: [R.copyrightOffice, R.contentCredentials], related: ["everyday", "safety", "product"] }
     ] }
   ];
 
@@ -339,12 +418,23 @@ footer a { text-underline-offset: 2px; }
         if (box.checked) done.add(i[0]); else done.delete(i[0]);
         save(); render("c-" + i[0]);
       });
-      return el("li", null, [el("label", { for: "c-" + i[0] }, [box, el("span", null, [el("span", { class: "name", text: i[1] }), el("span", { class: "note", text: i[2] })])])]);
+      return el("li", null, [
+        el("label", { for: "c-" + i[0] }, [box, el("span", null, [el("span", { class: "name", text: i[1] }), el("span", { class: "note", text: i[2] })])]),
+        resLine(i)
+      ]);
     }));
+  }
+  var VERB = { Article: "Read", Guide: "Read", Report: "Read", Docs: "Read", Video: "Watch", Course: "Take the course", Tool: "Try" };
+  function resLine(i) {
+    var r = i[3];
+    if (!r) {
+      return el("p", { class: "res missing" }, ["No beginner link yet. ", el("a", { href: "https://github.com/and/ai-map/issues/new?title=" + encodeURIComponent("Resource for: " + i[1]), target: "_blank", rel: "noopener", text: "Suggest one" })]);
+    }
+    return el("p", { class: "res" }, [(VERB[r[3]] || "Open") + ": ", el("a", { href: r[1], target: "_blank", rel: "noopener", text: r[0] }), el("span", { class: "src", text: " \u00b7 " + r[2] + ", " + r[3].toLowerCase() })]);
   }
   function linkRow(links, label) {
     return el("div", { class: "links" }, [el("span", { text: label })].concat(links.map(function (l) {
-      return el("a", { href: l[1], target: "_blank", rel: "noopener", text: l[0] });
+      return el("a", { href: l[1], target: "_blank", rel: "noopener", text: l[0] + " (" + l[2] + ")" });
     })));
   }
 
@@ -361,6 +451,11 @@ footer a { text-underline-offset: 2px; }
     var intro = el("header", { class: "intro" }, [
       el("h1", { text: "AI Map" }),
       el("p", { text: "AI looks different depending on where you stand. Someone using a chat app, a lawyer drafting policy and a researcher training models all need different ideas. This map shows nine perspectives, each with the concepts that matter from there. Start with the basics everyone shares, then explore the ones closest to you, and a few that aren't." }),
+      el("ol", { class: "howto" }, [
+        el("li", { text: "Read the six basics below. Everything else builds on them." }),
+        el("li", { text: "Choose Build, Shape or Use, then the perspective closest to you." }),
+        el("li", { text: "Under each concept there's one beginner-friendly link. Open it, then tick the concept when you could explain it to a friend." })
+      ]),
       el("div", { class: "toolbar" }, [
         el("span", null, ["You know ", el("span", { class: "total", text: total + " of " + all.length }), " concepts."]),
         el("span", { "aria-live": "polite", text: stored ? "Ticks are saved in this browser only." : "This browser blocks storage, so ticks reset when you leave." }),
@@ -375,24 +470,24 @@ footer a { text-underline-offset: 2px; }
         el("h2", { id: "basics-h", text: BASICS.name }),
         el("p", { text: "Six ideas that every perspective builds on." })
       ]),
-      el("div", { class: "panel basics" }, [conceptList(BASICS.items), linkRow(BASICS.links, "Start with:")])
+      el("div", { class: "panel basics" }, [conceptList(BASICS.items), linkRow(BASICS.links, "If you have more time:")])
     ]);
 
     var map = el("section", { "aria-labelledby": "map-h" }, [
       el("div", { class: "section-head" }, [
         el("h2", { id: "map-h", text: "Pick a way to look at AI" }),
-        el("p", { text: "Do you want to build AI, shape how it's built and governed, or use it? Choose one to see the perspectives inside it. Most people end up with two or three." })
+        el("p", { text: "AI gets built first, then shaped into products and rules, then used. Choose where you stand to see the perspectives inside it. Most people end up with two or three." })
       ]),
       el("nav", { class: "tabs", "aria-label": "Ways to look at AI" }, FAMILIES.map(function (f) {
         var ids = []; f.personas.forEach(function (p) { ids = ids.concat(itemIds(p.groups)); });
         var n = f.personas.length;
         return el("a", { class: "tab", href: "#" + f.id, style: "--c:" + f.color, "aria-current": fam === f ? "true" : "false" }, [
           el("span", { class: "tab-name", text: f.name }),
+          el("span", { class: "tab-blurb", text: f.blurb }),
           el("span", { class: "tab-meta", text: n + (n === 1 ? " perspective" : " perspectives") + ", " + countDone(ids) + " of " + ids.length + " known" })
         ]);
       }))
     ].concat(fam ? [
-      el("p", { class: "family-lead", text: fam.blurb }),
       el("div", { class: "cards", style: "--c:" + fam.color }, fam.personas.map(function (p) {
         var ids = itemIds(p.groups), d = countDone(ids), pct = Math.round(d / ids.length * 100);
         return el("a", { class: "card", href: "#" + p.id, "aria-current": p === sel ? "true" : "false" }, [
@@ -417,14 +512,15 @@ footer a { text-underline-offset: 2px; }
           conceptList(g.items)
         ]);
       })),
-      linkRow(sel.links, "Start with:"),
+      linkRow(sel.links, "Go further:"),
       el("div", { class: "related" }, [el("span", { text: "Also look at:" })].concat(sel.related.filter(function (r) { return PERSONAS[r]; }).map(function (r) {
         return el("a", { href: "#" + r, text: PERSONAS[r].name });
       })))
     ]) : null;
 
     var footer = el("footer", null, [
-      el("p", null, ["Some resources were picked from the ", el("a", { href: "https://github.com/louisfb01/start-ai-engineering", target: "_blank", rel: "noopener", text: "start-ai-engineering" }), " roadmap. Suggestions welcome on ", el("a", { href: "https://github.com/and/ai-map", target: "_blank", rel: "noopener", text: "GitHub" }), "."])
+      el("p", { text: "Content last reviewed " + REVIEWED + "." }),
+      el("p", null, ["Some resources were picked from the ", el("a", { href: "https://github.com/louisfb01/start-ai-engineering", target: "_blank", rel: "noopener", text: "start-ai-engineering" }), " roadmap. Found a broken link or know a better beginner resource? ", el("a", { href: "https://github.com/and/ai-map/issues/new", target: "_blank", rel: "noopener", text: "Open an issue on GitHub" }), "."])
     ]);
 
     app.replaceChildren.apply(app, [intro, basics, map, detail, footer].filter(Boolean));

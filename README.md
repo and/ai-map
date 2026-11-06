@@ -10,9 +10,9 @@ Everyone starts with six shared basics: what AI, machine learning and LLMs are, 
 
 | Family | Perspective | The question it asks |
 | --- | --- | --- |
-| Build AI | AI engineer | How do I build reliable products on top of existing models? |
-| Build AI | ML engineer and data scientist | How do I train, adapt and run models myself? |
 | Build AI | Researcher | How do models work inside, and how do we make them better? |
+| Build AI | ML engineer and data scientist | How do I train, adapt and run models myself? |
+| Build AI | AI engineer | How do I build reliable products on top of existing models? |
 | Shape AI | Product and design | What should we build with AI, and how will people experience it? |
 | Shape AI | Business leader | Where does AI create value for us, and what are the risks? |
 | Shape AI | Safety, ethics and policy | How do we make AI safe, fair and accountable? |
@@ -20,7 +20,7 @@ Everyone starts with six shared basics: what AI, machine learning and LLMs are, 
 | Use AI | Professional at work | How do I use AI to do my job better? |
 | Use AI | Creator | How do I make images, video, music and writing with AI? |
 
-The page opens on three tabs: Build AI, Shape AI and Use AI. Choosing one shows the perspectives inside it, and choosing a perspective opens its concepts. Each perspective has nine concepts in three groups, a few free resources to start with, and links to related perspectives. That's 87 concepts in all.
+The page opens on three tabs: Build AI, Shape AI and Use AI. Choosing one shows the perspectives inside it, and choosing a perspective opens its concepts. Each perspective has nine concepts in three groups, and links to related perspectives. That's 87 concepts in all. Every concept has a one-line explanation and one beginner-friendly link to learn it from.
 
 ## How it works
 
@@ -40,7 +40,7 @@ The tabs, cards and progress counts update by themselves.
 
 ## Contributing
 
-Suggestions for perspectives, concepts or better starter resources are welcome as issues or pull requests.
+Suggestions for perspectives, concepts or better beginner resources are welcome as issues or pull requests. [MAINTAINING.md](MAINTAINING.md) explains how the content is organised, the rules for resources, concepts and perspectives, and the review routine that keeps the page current. A weekly GitHub Action checks every link and opens an issue if any are broken.
 
 ## Credits
 
