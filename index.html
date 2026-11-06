@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
 <style>
-/* Layout idea: shared basics first, then a 3x3 map of perspectives (three families: use, shape, build), then the selected perspective in full. */
+/* Layout idea: shared basics first, then a 3x3 map of perspectives (three families: build, shape, use), then the selected perspective in full. */
 :root {
   --bg: #f5f5f2;
   --surface: #ffffff;
@@ -131,58 +131,58 @@ footer a { text-underline-offset: 2px; }
   };
 
   var FAMILIES = [
-    { id: "use", name: "Use AI", blurb: "Getting things done with AI tools. No code needed.", color: "var(--use)", personas: [
-      { id: "everyday", name: "Everyday user", question: "How can AI help me day to day, and when can I trust it?", who: "Anyone using chat assistants to learn, write, plan or just explore.", groups: [
-        { name: "Getting started", items: [
-          ["choose-assistant", "Choosing an assistant", "Chat apps differ in strengths, privacy and price."],
-          ["follow-ups", "Asking follow-up questions", "Treat it as a conversation and refine, rather than starting over."],
-          ["multimodal-input", "Files, photos and voice", "Many assistants can read documents, look at images and talk."]
+    { id: "build", name: "Build AI", blurb: "Making AI systems and models, from apps on top of models to the models themselves.", color: "var(--build)", personas: [
+      { id: "ai-engineer", name: "AI engineer", question: "How do I build reliable products on top of existing models?", who: "Software engineers building apps, features and agents with model APIs.", groups: [
+        { name: "Building blocks", items: [
+          ["apis-structured", "Model APIs and structured output", "Call a model from code and get data back, not prose."],
+          ["context-eng", "Context engineering", "Choosing exactly what the model sees on each call."],
+          ["tool-use", "Tool use and MCP", "Letting models call functions, APIs and other systems."]
         ] },
-        { name: "Everyday uses", items: [
-          ["learning", "Learning and explanations", "Ask for simpler words, examples or a quiz on any topic."],
-          ["writing-help", "Writing and editing", "Drafts, rewrites and tone changes, with your own voice kept."],
-          ["planning", "Planning and research", "Trips, meals, budgets and comparisons, with the facts checked."]
+        { name: "Systems", items: [
+          ["rag", "Retrieval (RAG) and embeddings", "Fetching the right documents so answers are grounded in your data."],
+          ["agents", "Agents and workflows", "Workflows follow a fixed path. Agents choose their own next step."],
+          ["agent-memory", "Memory", "What a system keeps between conversations, and how it recalls it."]
         ] },
-        { name: "Staying safe", items: [
-          ["verify", "Checking answers", "Ask for sources and verify anything important somewhere else."],
-          ["deepfakes", "Spotting deepfakes and scams", "AI makes fake voices, images and messages cheap to produce."],
-          ["privacy-settings", "Privacy settings", "Know what the app keeps, and turn off what you don't want kept."]
+        { name: "Reliability", items: [
+          ["evals-eng", "Evals and error analysis", "Study real failures, then test for them on every change."],
+          ["observability", "Tracing and observability", "Seeing every step a system took when something goes wrong."],
+          ["cost-latency", "Cost, latency and fallbacks", "Keep it fast and affordable, and fail gracefully."]
         ] }
-      ], links: [["Learn Prompting", "https://learnprompting.org/"], ["Elements of AI", "https://www.elementsofai.com/"]], related: ["professional", "creator", "safety"] },
-      { id: "professional", name: "Professional at work", question: "How do I use AI to do my job better?", who: "People in any role bringing AI into documents, data, meetings and email.", groups: [
-        { name: "Daily work", items: [
-          ["summarise-docs", "Drafting and summarising", "Turn long reading into briefs, and rough notes into drafts."],
-          ["data-analysis", "Analysing data", "Ask questions of a spreadsheet and get charts without formulas."],
-          ["meetings", "Meeting notes and follow-ups", "Transcripts, decisions and action items captured for you."]
+      ], links: [["Building Effective AI Agents (Anthropic)", "https://www.anthropic.com/research/building-effective-agents"], ["A Field Guide to Rapidly Improving AI Products (Hamel Husain)", "https://hamel.dev/blog/posts/field-guide/"], ["Hugging Face Agents Course", "https://huggingface.co/learn/agents-course/"]], related: ["product", "ml-engineer", "safety"] },
+      { id: "ml-engineer", name: "ML engineer and data scientist", question: "How do I train, adapt and run models myself?", who: "People who work with data and models directly, from analysis to deployment.", groups: [
+        { name: "Data", items: [
+          ["datasets", "Collecting and cleaning data", "Most of a model's quality comes from its data, not the algorithm."],
+          ["data-labelling", "Labelling and synthetic data", "Creating training examples by hand or with other models."],
+          ["splits", "Train/test splits and leakage", "Test on data the model hasn't seen, or the results mislead you."]
         ] },
-        { name: "Workflows", items: [
-          ["connectors", "Connecting AI to your apps", "Connectors and MCP let assistants work with your email, calendar and files."],
-          ["automation", "No-code automation and agents", "Hand off multi-step tasks that run while you do other work."],
-          ["reusable-prompts", "Reusable prompts and skills", "Save instructions that work, so the whole team gets consistent results."]
+        { name: "Models", items: [
+          ["classical-ml", "Classical machine learning", "Regression, decision trees and clustering still solve many problems best."],
+          ["fine-tuning", "Fine-tuning and LoRA", "Adapting a pretrained model to your task with less compute."],
+          ["metrics", "Evaluation metrics", "Accuracy, precision and recall, and when each one misleads."]
         ] },
-        { name: "Working responsibly", items: [
-          ["ai-policy", "Your company's AI policy", "Which tools are approved, and what data can go into them."],
-          ["review-output", "Reviewing before you send", "You stay accountable for anything AI helped you produce."],
-          ["disclose", "Being open about AI use", "When colleagues and clients should know AI was involved."]
+        { name: "Running models", items: [
+          ["serving", "Serving and inference", "Running models behind an API, with tools like vLLM or Ollama."],
+          ["quantisation", "Quantisation and optimisation", "Smaller, faster models with little loss in quality."],
+          ["mlops", "MLOps", "Versioning, monitoring and retraining models in production."]
         ] }
-      ], links: [["Anthropic Academy (free courses)", "https://www.anthropic.com/learn"], ["AI For Everyone (Andrew Ng)", "https://www.coursera.org/learn/ai-for-everyone"]], related: ["everyday", "leader", "product"] },
-      { id: "creator", name: "Creator", question: "How do I make images, video, music and writing with AI?", who: "Artists, writers, designers, marketers and anyone who makes media.", groups: [
-        { name: "Generative media", items: [
-          ["image-gen", "Image generation and editing", "Create or change images from a text description."],
-          ["video-gen", "Video generation", "Short clips from text or images, improving quickly."],
-          ["audio-gen", "Voice and music", "Synthetic voices, voice cloning and generated music."]
+      ], links: [["Practical Deep Learning for Coders (fast.ai)", "https://course.fast.ai/"], ["StatQuest (videos)", "https://www.youtube.com/@statquest"], ["Hugging Face LLM Course", "https://huggingface.co/learn/llm-course/chapter1/1"]], related: ["ai-engineer", "researcher"] },
+      { id: "researcher", name: "Researcher", question: "How do models work inside, and how do we make them better?", who: "Students and scientists studying how models learn, reason and fail.", groups: [
+        { name: "Foundations", items: [
+          ["math", "Linear algebra, probability, calculus", "The mathematics every model is built from."],
+          ["backprop", "Neural networks and backpropagation", "How networks learn, by nudging weights to reduce error."],
+          ["transformers", "Attention and transformers", "The architecture behind today's language models."]
         ] },
-        { name: "Craft", items: [
-          ["describe-style", "Describing style and composition", "Precise words for light, mood and framing steer the result."],
-          ["iterate", "Iterating and editing", "Generate many, pick the best, then refine. It's rarely right first time."],
-          ["mix-own-work", "Mixing AI with your own work", "Use AI for parts of the process and keep your hand in the rest."]
+        { name: "Training at scale", items: [
+          ["pretraining", "Pretraining and scaling laws", "Bigger models and more data improve results predictably, up to a point."],
+          ["post-training", "Post-training: RLHF and DPO", "Shaping a raw model into a helpful assistant."],
+          ["reasoning", "Reasoning and test-time compute", "Letting models think longer to solve harder problems."]
         ] },
-        { name: "Rights and credit", items: [
-          ["copyright", "Copyright and AI", "Who owns AI-assisted work, and what training on others' work means."],
-          ["licensing", "Licensing and commercial use", "Check each tool's terms before you sell what you make."],
-          ["labelling", "Labelling AI-made content", "Content Credentials show how a piece of media was made."]
+        { name: "Research practice", items: [
+          ["papers", "Reading papers", "Following new work, reproducing results and judging claims."],
+          ["benchmarks", "Benchmarks and their limits", "What a score measures, and what it misses."],
+          ["interpretability", "Interpretability", "Looking inside models to see which features they use."]
         ] }
-      ], links: [["Copyright and AI (US Copyright Office)", "https://www.copyright.gov/ai/"], ["Content Credentials", "https://contentcredentials.org/"], ["Two Minute Papers (videos on new models)", "https://www.youtube.com/@TwoMinutePapers"]], related: ["everyday", "safety", "product"] }
+      ], links: [["3Blue1Brown (videos)", "https://www.youtube.com/@3blue1brown"], ["Andrej Karpathy (videos)", "https://www.youtube.com/@AndrejKarpathy"], ["Mapping the Mind of a Large Language Model (Anthropic)", "https://www.anthropic.com/research/mapping-mind-language-model"]], related: ["ml-engineer", "safety"] }
     ] },
     { id: "shape", name: "Shape AI", blurb: "Deciding what gets built, how it behaves and what rules it follows.", color: "var(--shape)", personas: [
       { id: "product", name: "Product and design", question: "What should we build with AI, and how will people experience it?", who: "Product managers, designers and founders deciding which AI features to ship.", groups: [
@@ -237,58 +237,58 @@ footer a { text-underline-offset: 2px; }
         ] }
       ], links: [["OWASP Top 10 for LLM Applications", "https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/"], ["NIST AI Risk Management Framework", "https://www.nist.gov/itl/ai-risk-management-framework"], ["The lethal trifecta for AI agents (Simon Willison)", "https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/"]], related: ["leader", "researcher", "ai-engineer"] }
     ] },
-    { id: "build", name: "Build AI", blurb: "Making AI systems and models, from apps on top of models to the models themselves.", color: "var(--build)", personas: [
-      { id: "ai-engineer", name: "AI engineer", question: "How do I build reliable products on top of existing models?", who: "Software engineers building apps, features and agents with model APIs.", groups: [
-        { name: "Building blocks", items: [
-          ["apis-structured", "Model APIs and structured output", "Call a model from code and get data back, not prose."],
-          ["context-eng", "Context engineering", "Choosing exactly what the model sees on each call."],
-          ["tool-use", "Tool use and MCP", "Letting models call functions, APIs and other systems."]
+    { id: "use", name: "Use AI", blurb: "Getting things done with AI tools. No code needed.", color: "var(--use)", personas: [
+      { id: "everyday", name: "Everyday user", question: "How can AI help me day to day, and when can I trust it?", who: "Anyone using chat assistants to learn, write, plan or just explore.", groups: [
+        { name: "Getting started", items: [
+          ["choose-assistant", "Choosing an assistant", "Chat apps differ in strengths, privacy and price."],
+          ["follow-ups", "Asking follow-up questions", "Treat it as a conversation and refine, rather than starting over."],
+          ["multimodal-input", "Files, photos and voice", "Many assistants can read documents, look at images and talk."]
         ] },
-        { name: "Systems", items: [
-          ["rag", "Retrieval (RAG) and embeddings", "Fetching the right documents so answers are grounded in your data."],
-          ["agents", "Agents and workflows", "Workflows follow a fixed path. Agents choose their own next step."],
-          ["agent-memory", "Memory", "What a system keeps between conversations, and how it recalls it."]
+        { name: "Everyday uses", items: [
+          ["learning", "Learning and explanations", "Ask for simpler words, examples or a quiz on any topic."],
+          ["writing-help", "Writing and editing", "Drafts, rewrites and tone changes, with your own voice kept."],
+          ["planning", "Planning and research", "Trips, meals, budgets and comparisons, with the facts checked."]
         ] },
-        { name: "Reliability", items: [
-          ["evals-eng", "Evals and error analysis", "Study real failures, then test for them on every change."],
-          ["observability", "Tracing and observability", "Seeing every step a system took when something goes wrong."],
-          ["cost-latency", "Cost, latency and fallbacks", "Keep it fast and affordable, and fail gracefully."]
+        { name: "Staying safe", items: [
+          ["verify", "Checking answers", "Ask for sources and verify anything important somewhere else."],
+          ["deepfakes", "Spotting deepfakes and scams", "AI makes fake voices, images and messages cheap to produce."],
+          ["privacy-settings", "Privacy settings", "Know what the app keeps, and turn off what you don't want kept."]
         ] }
-      ], links: [["Building Effective AI Agents (Anthropic)", "https://www.anthropic.com/research/building-effective-agents"], ["A Field Guide to Rapidly Improving AI Products (Hamel Husain)", "https://hamel.dev/blog/posts/field-guide/"], ["Hugging Face Agents Course", "https://huggingface.co/learn/agents-course/"]], related: ["product", "ml-engineer", "safety"] },
-      { id: "ml-engineer", name: "ML engineer and data scientist", question: "How do I train, adapt and run models myself?", who: "People who work with data and models directly, from analysis to deployment.", groups: [
-        { name: "Data", items: [
-          ["datasets", "Collecting and cleaning data", "Most of a model's quality comes from its data, not the algorithm."],
-          ["data-labelling", "Labelling and synthetic data", "Creating training examples by hand or with other models."],
-          ["splits", "Train/test splits and leakage", "Test on data the model hasn't seen, or the results mislead you."]
+      ], links: [["Learn Prompting", "https://learnprompting.org/"], ["Elements of AI", "https://www.elementsofai.com/"]], related: ["professional", "creator", "safety"] },
+      { id: "professional", name: "Professional at work", question: "How do I use AI to do my job better?", who: "People in any role bringing AI into documents, data, meetings and email.", groups: [
+        { name: "Daily work", items: [
+          ["summarise-docs", "Drafting and summarising", "Turn long reading into briefs, and rough notes into drafts."],
+          ["data-analysis", "Analysing data", "Ask questions of a spreadsheet and get charts without formulas."],
+          ["meetings", "Meeting notes and follow-ups", "Transcripts, decisions and action items captured for you."]
         ] },
-        { name: "Models", items: [
-          ["classical-ml", "Classical machine learning", "Regression, decision trees and clustering still solve many problems best."],
-          ["fine-tuning", "Fine-tuning and LoRA", "Adapting a pretrained model to your task with less compute."],
-          ["metrics", "Evaluation metrics", "Accuracy, precision and recall, and when each one misleads."]
+        { name: "Workflows", items: [
+          ["connectors", "Connecting AI to your apps", "Connectors and MCP let assistants work with your email, calendar and files."],
+          ["automation", "No-code automation and agents", "Hand off multi-step tasks that run while you do other work."],
+          ["reusable-prompts", "Reusable prompts and skills", "Save instructions that work, so the whole team gets consistent results."]
         ] },
-        { name: "Running models", items: [
-          ["serving", "Serving and inference", "Running models behind an API, with tools like vLLM or Ollama."],
-          ["quantisation", "Quantisation and optimisation", "Smaller, faster models with little loss in quality."],
-          ["mlops", "MLOps", "Versioning, monitoring and retraining models in production."]
+        { name: "Working responsibly", items: [
+          ["ai-policy", "Your company's AI policy", "Which tools are approved, and what data can go into them."],
+          ["review-output", "Reviewing before you send", "You stay accountable for anything AI helped you produce."],
+          ["disclose", "Being open about AI use", "When colleagues and clients should know AI was involved."]
         ] }
-      ], links: [["Practical Deep Learning for Coders (fast.ai)", "https://course.fast.ai/"], ["StatQuest (videos)", "https://www.youtube.com/@statquest"], ["Hugging Face LLM Course", "https://huggingface.co/learn/llm-course/chapter1/1"]], related: ["ai-engineer", "researcher"] },
-      { id: "researcher", name: "Researcher", question: "How do models work inside, and how do we make them better?", who: "Students and scientists studying how models learn, reason and fail.", groups: [
-        { name: "Foundations", items: [
-          ["math", "Linear algebra, probability, calculus", "The mathematics every model is built from."],
-          ["backprop", "Neural networks and backpropagation", "How networks learn, by nudging weights to reduce error."],
-          ["transformers", "Attention and transformers", "The architecture behind today's language models."]
+      ], links: [["Anthropic Academy (free courses)", "https://www.anthropic.com/learn"], ["AI For Everyone (Andrew Ng)", "https://www.coursera.org/learn/ai-for-everyone"]], related: ["everyday", "leader", "product"] },
+      { id: "creator", name: "Creator", question: "How do I make images, video, music and writing with AI?", who: "Artists, writers, designers, marketers and anyone who makes media.", groups: [
+        { name: "Generative media", items: [
+          ["image-gen", "Image generation and editing", "Create or change images from a text description."],
+          ["video-gen", "Video generation", "Short clips from text or images, improving quickly."],
+          ["audio-gen", "Voice and music", "Synthetic voices, voice cloning and generated music."]
         ] },
-        { name: "Training at scale", items: [
-          ["pretraining", "Pretraining and scaling laws", "Bigger models and more data improve results predictably, up to a point."],
-          ["post-training", "Post-training: RLHF and DPO", "Shaping a raw model into a helpful assistant."],
-          ["reasoning", "Reasoning and test-time compute", "Letting models think longer to solve harder problems."]
+        { name: "Craft", items: [
+          ["describe-style", "Describing style and composition", "Precise words for light, mood and framing steer the result."],
+          ["iterate", "Iterating and editing", "Generate many, pick the best, then refine. It's rarely right first time."],
+          ["mix-own-work", "Mixing AI with your own work", "Use AI for parts of the process and keep your hand in the rest."]
         ] },
-        { name: "Research practice", items: [
-          ["papers", "Reading papers", "Following new work, reproducing results and judging claims."],
-          ["benchmarks", "Benchmarks and their limits", "What a score measures, and what it misses."],
-          ["interpretability", "Interpretability", "Looking inside models to see which features they use."]
+        { name: "Rights and credit", items: [
+          ["copyright", "Copyright and AI", "Who owns AI-assisted work, and what training on others' work means."],
+          ["licensing", "Licensing and commercial use", "Check each tool's terms before you sell what you make."],
+          ["labelling", "Labelling AI-made content", "Content Credentials show how a piece of media was made."]
         ] }
-      ], links: [["3Blue1Brown (videos)", "https://www.youtube.com/@3blue1brown"], ["Andrej Karpathy (videos)", "https://www.youtube.com/@AndrejKarpathy"], ["Mapping the Mind of a Large Language Model (Anthropic)", "https://www.anthropic.com/research/mapping-mind-language-model"]], related: ["ml-engineer", "safety"] }
+      ], links: [["Copyright and AI (US Copyright Office)", "https://www.copyright.gov/ai/"], ["Content Credentials", "https://contentcredentials.org/"], ["Two Minute Papers (videos on new models)", "https://www.youtube.com/@TwoMinutePapers"]], related: ["everyday", "safety", "product"] }
     ] }
   ];
 
@@ -371,7 +371,7 @@ footer a { text-underline-offset: 2px; }
       el("div", { class: "section-head" }, [
         el("p", { class: "eyebrow", text: "Nine perspectives" }),
         el("h2", { id: "map-h", text: "Pick a way to look at AI" }),
-        el("p", { text: "They run from using AI, to shaping how it's built and governed, to building it. None is the right one. Most people end up with two or three." })
+        el("p", { text: "They run from building AI, to shaping how it's built and governed, to using it. None is the right one. Most people end up with two or three." })
       ]),
       el("div", { class: "map" }, FAMILIES.map(function (f) {
         return el("div", { class: "family", style: "--c:" + f.color }, [
