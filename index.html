@@ -273,7 +273,19 @@ footer a { text-underline-offset: 2px; }
         { name: "Harms", items: [
           ["bias", "Bias and fairness", "Models can reflect and amplify unfair patterns in their data.", R.ibmBias],
           ["misinformation", "Misinformation and deepfakes", "Cheap, convincing fakes change how we judge evidence.", R.contentCredentials],
-          ["misuse", "Misuse and dual use", "The same capability can help or harm, depending on who uses it.", null],
+          ["misuse", "Misuse and dual use", "The same capability can help or harm, depending on who uses it.", null]
+        ] },
+        { name: "Security", items: [
+          ["prompt-injection", "Prompt injection", "Hidden instructions in content can hijack an AI system.", R.owaspInjection],
+          ["data-leakage", "Data leakage", "Private data can escape through prompts, outputs or tools.", R.owaspTop10],
+          ["red-teaming", "Red teaming", "Deliberately attacking a system to find failures before others do.", R.redTeaming]
+        ] },
+        { name: "Governance", items: [
+          ["risk-frameworks", "Risk frameworks", "Structured ways to identify, measure and manage AI risk.", R.nistRmf],
+          ["ai-law", "AI law and regulation", "The EU AI Act and other rules set duties by level of risk.", R.euExplorer],
+          ["alignment", "Alignment and interpretability", "Research on making models do what we intend, and seeing why they don't.", R.ibmAlignment]
+        ] }
+      ], links: [R.owaspTop10, R.nistRmf], related: ["leader", "researcher", "ai-engineer"] },
       { id: "leader", name: "Business leader", question: "Where does AI create value for us, and what are the risks?", who: "Founders, executives and managers making decisions about adopting AI.", groups: [
         { name: "Strategy", items: [
           ["value", "Where AI creates value", "Lower costs, new products or faster decisions, and how to tell which.", R.aiForEveryone],
@@ -308,18 +320,6 @@ footer a { text-underline-offset: 2px; }
           ["unit-economics", "Cost and speed per use", "Every AI call costs money and time, and both shape the design.", null]
         ] }
       ], links: [R.pairGuidebook, R.hamelEvals], related: ["ai-engineer", "leader", "safety"] }
-    ] },
-        { name: "Security", items: [
-          ["prompt-injection", "Prompt injection", "Hidden instructions in content can hijack an AI system.", R.owaspInjection],
-          ["data-leakage", "Data leakage", "Private data can escape through prompts, outputs or tools.", R.owaspTop10],
-          ["red-teaming", "Red teaming", "Deliberately attacking a system to find failures before others do.", R.redTeaming]
-        ] },
-        { name: "Governance", items: [
-          ["risk-frameworks", "Risk frameworks", "Structured ways to identify, measure and manage AI risk.", R.nistRmf],
-          ["ai-law", "AI law and regulation", "The EU AI Act and other rules set duties by level of risk.", R.euExplorer],
-          ["alignment", "Alignment and interpretability", "Research on making models do what we intend, and seeing why they don't.", R.ibmAlignment]
-        ] }
-      ], links: [R.owaspTop10, R.nistRmf], related: ["leader", "researcher", "ai-engineer"] }
     ] },
     { id: "use", name: "Use AI", blurb: "Getting things done with AI tools. No code needed.", color: "var(--use)", personas: [
       { id: "creator", name: "Creator", question: "How do I make images, video, music and writing with AI?", who: "Artists, writers, designers, marketers and anyone who makes media.", groups: [
