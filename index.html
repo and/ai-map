@@ -3,23 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI Engineering Concept Map</title>
-<meta name="description" content="33 AI engineering concepts grouped by persona (research scientist, AI engineer, end user), with a progress checklist.">
+<title>AI Map</title>
+<meta name="description" content="AI seen from nine perspectives, from everyday user to researcher, with the concepts that matter from each and a checklist to track what you know.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
 <style>
-/* Layout idea: summary tiles on top, then three persona columns; the AI engineer column is wider and tinted because it is where applied work happens. */
+/* Layout idea: shared basics first, then a 3x3 map of perspectives (three families: use, shape, build), then the selected perspective in full. */
 :root {
-  --bg: #f4f6f5;
+  --bg: #f5f5f2;
   --surface: #ffffff;
-  --ink: #1a201f;
-  --muted: #5a6563;
-  --line: #d6dddb;
-  --engineer: #0e6b5c;
-  --research: #6a55a8;
-  --user: #a3621a;
-  --engineer-tint: #e3f0ec;
+  --ink: #1c1e1d;
+  --muted: #5d6360;
+  --line: #d9dcd7;
+  --use: #a3570f;
+  --shape: #6a55a8;
+  --build: #0e6b5c;
+  --base: #33403c;
   --font-display: "IBM Plex Serif", Georgia, serif;
   --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
@@ -27,170 +27,400 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #121615; --surface: #1a201f; --ink: #e7ecea; --muted: #9aa6a3; --line: #2e3836;
-    --engineer: #4fb8a3; --research: #a896e0; --user: #e0a35a; --engineer-tint: #17302b;
+    --bg: #131615; --surface: #1b1f1e; --ink: #e8ebe9; --muted: #9ca5a1; --line: #303836;
+    --use: #e4a457; --shape: #a996e2; --build: #4fb8a3; --base: #c9d3cf;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #121615; --surface: #1a201f; --ink: #e7ecea; --muted: #9aa6a3; --line: #2e3836;
-  --engineer: #4fb8a3; --research: #a896e0; --user: #e0a35a; --engineer-tint: #17302b;
+  --bg: #131615; --surface: #1b1f1e; --ink: #e8ebe9; --muted: #9ca5a1; --line: #303836;
+  --use: #e4a457; --shape: #a996e2; --build: #4fb8a3; --base: #c9d3cf;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; }
 body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
-main { max-width: 1120px; margin: 0 auto; padding: 32px 20px 56px; display: grid; gap: 28px; }
-header { display: grid; gap: 8px; max-width: 68ch; }
-h1 { font-family: var(--font-display); font-weight: 600; font-size: 30px; line-height: 1.2; margin: 0; text-wrap: balance; }
-header p { margin: 0; color: var(--muted); }
-.status { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
-.tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 6px; }
-.tile .label { font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
-.tile .num { font-family: var(--font-mono); font-size: 22px; font-variant-numeric: tabular-nums; }
-.tile .num small { font-size: 14px; color: var(--muted); }
-.bar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
-.bar span { display: block; height: 100%; border-radius: 3px; transition: width .25s ease; }
-.focus-tag { font-family: var(--font-mono); font-size: 11px; color: var(--engineer); text-transform: uppercase; letter-spacing: .06em; }
-.columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr) minmax(0, 1fr); gap: 16px; align-items: start; }
-.persona { border: 1px solid var(--line); border-top: 4px solid var(--c); border-radius: 10px; padding: 16px; display: grid; gap: 12px; background: var(--surface); }
-.persona.focus { background: var(--engineer-tint); border-color: var(--engineer); border-width: 2px; border-top-width: 4px; }
-.persona h2 { font-family: var(--font-display); font-size: 20px; font-weight: 600; margin: 0; }
-.persona .depth { margin: 0; font-size: 13px; color: var(--muted); }
-.group { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: grid; gap: 8px; }
-.group-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-.group h3 { margin: 0; font-size: 15px; font-weight: 600; }
-.group .count { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.group .where { margin: -4px 0 0; font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); }
-.group ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
-.group label { display: flex; gap: 10px; align-items: flex-start; padding: 5px 6px; margin: 0 -6px; border-radius: 6px; cursor: pointer; }
-.group label:hover { background: var(--bg); }
-.group input { margin: 3px 0 0; width: 16px; height: 16px; accent-color: var(--c); flex: none; cursor: pointer; }
-.group input:focus-visible { outline: 2px solid var(--c); outline-offset: 2px; }
-.group input:checked + span { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line); }
-.group.complete { border-color: var(--c); }
-footer { color: var(--muted); font-size: 13px; max-width: 68ch; }
-footer a { color: var(--engineer); }
-@media (max-width: 860px) { .columns { grid-template-columns: 1fr; } .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (prefers-reduced-motion: reduce) { .bar span { transition: none; } }
-
-.where a { color: var(--c); text-decoration-thickness: 1px; text-underline-offset: 2px; }
-.actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-button.reset { font: inherit; font-size: 13px; color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+a { color: inherit; }
+main { max-width: 1140px; margin: 0 auto; padding: 36px 20px 64px; display: grid; gap: 40px; }
+h1, h2, h3 { text-wrap: balance; }
+.intro { display: grid; gap: 12px; }
+.intro h1 { font-family: var(--font-display); font-weight: 600; font-size: 36px; line-height: 1.15; margin: 0; }
+.intro p { margin: 0; max-width: 66ch; color: var(--muted); font-size: 16px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: 13px; color: var(--muted); }
+.toolbar .total { font-family: var(--font-mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.section-head { display: grid; gap: 4px; margin-bottom: 14px; }
+.section-head h2 { font-family: var(--font-display); font-size: 24px; font-weight: 600; margin: 0; }
+.section-head p { margin: 0; color: var(--muted); max-width: 66ch; }
+button.reset { font: inherit; font-size: 13px; color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 3px 10px; cursor: pointer; }
 button.reset:hover { color: var(--ink); border-color: var(--muted); }
-button.reset:focus-visible { outline: 2px solid var(--engineer); outline-offset: 2px; }
-button.reset.armed { color: var(--user); border-color: var(--user); }
+button.reset.armed { color: var(--use); border-color: var(--use); }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+.panel.basics { border-top: 4px solid var(--base); --c: var(--base); }
+.concepts { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.basics .concepts { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px 20px; }
+.concepts label { display: flex; gap: 10px; align-items: flex-start; padding: 6px 8px; margin: 0 -8px; border-radius: 8px; cursor: pointer; }
+.concepts label:hover { background: var(--bg); }
+.concepts input { margin: 3px 0 0; width: 16px; height: 16px; flex: none; accent-color: var(--c); cursor: pointer; }
+.concepts .name { display: block; font-weight: 500; }
+.concepts .note { display: block; font-size: 13px; color: var(--muted); }
+.concepts input:checked + span .name { text-decoration: line-through; text-decoration-color: var(--muted); color: var(--muted); }
+input:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--c, var(--ink)); outline-offset: 2px; }
+.links { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 14px 0 0; padding: 12px 0 0; border-top: 1px solid var(--line); font-size: 13px; }
+.links span { color: var(--muted); }
+.links a { color: var(--c); text-underline-offset: 2px; text-decoration-thickness: 1px; }
+.map { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.family { display: grid; gap: 10px; align-content: start; }
+.family-head { border-top: 4px solid var(--c); padding-top: 10px; }
+.family-head h3 { margin: 0; font-family: var(--font-display); font-size: 19px; font-weight: 600; color: var(--c); }
+.family-head p { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+a.card { display: grid; gap: 8px; text-decoration: none; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+a.card:hover { border-color: var(--c); }
+a.card[aria-current="true"] { border-color: var(--c); box-shadow: inset 4px 0 0 var(--c); }
+.card .card-name { font-weight: 600; font-size: 16px; }
+.card .q { font-size: 13.5px; color: var(--muted); }
+.card .prog { display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.bar { flex: 1; height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.bar span { display: block; height: 100%; background: var(--c); border-radius: 3px; transition: width .25s ease; }
+.detail { border-top: 4px solid var(--c); scroll-margin-top: 16px; }
+.detail-head { display: grid; gap: 6px; margin-bottom: 18px; }
+.detail-head h2 { font-family: var(--font-display); font-size: 28px; font-weight: 600; margin: 0; }
+.detail-head .q { font-size: 17px; margin: 0; }
+.detail-head .who { margin: 0; color: var(--muted); max-width: 66ch; }
+.tag { justify-self: start; font-family: var(--font-mono); font-size: 12px; color: var(--c); border: 1px solid var(--c); border-radius: 999px; padding: 1px 10px; }
+.groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.group { display: grid; gap: 6px; align-content: start; }
+.group-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+.group-head h3 { margin: 0; font-size: 15px; font-weight: 600; }
+.count { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.related { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 14px; font-size: 13px; color: var(--muted); }
+.related a { text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 2px 12px; color: var(--ink); }
+.related a:hover { border-color: var(--ink); }
+footer { color: var(--muted); font-size: 13px; max-width: 70ch; display: grid; gap: 6px; }
+footer a { text-underline-offset: 2px; }
+@media (max-width: 900px) {
+  .map, .groups { grid-template-columns: 1fr; }
+  .basics .concepts { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  .basics .concepts { grid-template-columns: 1fr; }
+  .intro h1 { font-size: 30px; }
+}
+@media (prefers-reduced-motion: reduce) { .bar span { transition: none; } }
 </style>
 </head>
 <body>
-<main id="app"><noscript>This page needs JavaScript to show the checklist.</noscript></main>
+<main id="app"><noscript>This page needs JavaScript to show the map.</noscript></main>
 <script>
 (function () {
-  var DATA = [
-    { id: "research", name: "Research scientist", depth: "Know it well enough to explain it. Applied roles rarely need more.", color: "var(--research)", groups: [
-      { name: "Model internals", where: "Start with", link: ["Intro to Large Language Models (Karpathy)", "https://www.youtube.com/watch?v=zjkBMFhNj_g"], items: [["tokens", "Tokens and embeddings"], ["attention", "Attention and transformers"], ["pretraining", "Pretraining and scaling"]] },
-      { name: "Training", where: "Start with", link: ["How to Fine-Tune LLMs (Phil Schmid)", "https://www.philschmid.de/fine-tune-llms-in-2025"], items: [["lora", "Fine-tuning and LoRA"], ["rlhf", "RLHF and DPO"], ["curation", "Dataset curation"]] },
-      { name: "Reasoning and inference", where: "Start with", link: ["Why We Think (Lilian Weng)", "https://lilianweng.github.io/posts/2025-05-01-thinking/"], items: [["test-time", "Test-time compute and reasoning models"], ["inference", "Inference optimization"]] }
+  var BASICS = {
+    name: "What everyone should know",
+    items: [
+      ["ai-ml-llm", "AI, machine learning and LLMs", "AI is the field, machine learning learns from data, and LLMs are machine-learning models for language."],
+      ["training-inference", "Training vs using a model", "Training builds a model once. Inference is every time you use it."],
+      ["tokens-context", "Tokens and the context window", "Models read text in small chunks and can only hold so much at once."],
+      ["hallucination", "Why models make things up", "They predict likely words, so a confident answer can still be wrong."],
+      ["prompting", "Prompting", "Clear instructions, context and examples get far better results."],
+      ["data-sharing", "What happens to what you share", "Depending on the product, what you type may be stored or used for training."]
+    ],
+    links: [
+      ["How AI works in super simple terms (video)", "https://www.youtube.com/watch?v=q-BiW5srMFQ"],
+      ["Mastering AI jargon (video)", "https://www.youtube.com/watch?v=q4G6X09NEu4"],
+      ["Elements of AI (free course)", "https://www.elementsofai.com/"]
+    ]
+  };
+
+  var FAMILIES = [
+    { id: "use", name: "Use AI", blurb: "Getting things done with AI tools. No code needed.", color: "var(--use)", personas: [
+      { id: "everyday", name: "Everyday user", question: "How can AI help me day to day, and when can I trust it?", who: "Anyone using chat assistants to learn, write, plan or just explore.", groups: [
+        { name: "Getting started", items: [
+          ["choose-assistant", "Choosing an assistant", "Chat apps differ in strengths, privacy and price."],
+          ["follow-ups", "Asking follow-up questions", "Treat it as a conversation and refine, rather than starting over."],
+          ["multimodal-input", "Files, photos and voice", "Many assistants can read documents, look at images and talk."]
+        ] },
+        { name: "Everyday uses", items: [
+          ["learning", "Learning and explanations", "Ask for simpler words, examples or a quiz on any topic."],
+          ["writing-help", "Writing and editing", "Drafts, rewrites and tone changes, with your own voice kept."],
+          ["planning", "Planning and research", "Trips, meals, budgets and comparisons, with the facts checked."]
+        ] },
+        { name: "Staying safe", items: [
+          ["verify", "Checking answers", "Ask for sources and verify anything important somewhere else."],
+          ["deepfakes", "Spotting deepfakes and scams", "AI makes fake voices, images and messages cheap to produce."],
+          ["privacy-settings", "Privacy settings", "Know what the app keeps, and turn off what you don't want kept."]
+        ] }
+      ], links: [["Learn Prompting", "https://learnprompting.org/"], ["Elements of AI", "https://www.elementsofai.com/"]], related: ["professional", "creator", "safety"] },
+      { id: "professional", name: "Professional at work", question: "How do I use AI to do my job better?", who: "People in any role bringing AI into documents, data, meetings and email.", groups: [
+        { name: "Daily work", items: [
+          ["summarise-docs", "Drafting and summarising", "Turn long reading into briefs, and rough notes into drafts."],
+          ["data-analysis", "Analysing data", "Ask questions of a spreadsheet and get charts without formulas."],
+          ["meetings", "Meeting notes and follow-ups", "Transcripts, decisions and action items captured for you."]
+        ] },
+        { name: "Workflows", items: [
+          ["connectors", "Connecting AI to your apps", "Connectors and MCP let assistants work with your email, calendar and files."],
+          ["automation", "No-code automation and agents", "Hand off multi-step tasks that run while you do other work."],
+          ["reusable-prompts", "Reusable prompts and skills", "Save instructions that work, so the whole team gets consistent results."]
+        ] },
+        { name: "Working responsibly", items: [
+          ["ai-policy", "Your company's AI policy", "Which tools are approved, and what data can go into them."],
+          ["review-output", "Reviewing before you send", "You stay accountable for anything AI helped you produce."],
+          ["disclose", "Being open about AI use", "When colleagues and clients should know AI was involved."]
+        ] }
+      ], links: [["Anthropic Academy (free courses)", "https://www.anthropic.com/learn"], ["AI For Everyone (Andrew Ng)", "https://www.coursera.org/learn/ai-for-everyone"]], related: ["everyday", "leader", "product"] },
+      { id: "creator", name: "Creator", question: "How do I make images, video, music and writing with AI?", who: "Artists, writers, designers, marketers and anyone who makes media.", groups: [
+        { name: "Generative media", items: [
+          ["image-gen", "Image generation and editing", "Create or change images from a text description."],
+          ["video-gen", "Video generation", "Short clips from text or images, improving quickly."],
+          ["audio-gen", "Voice and music", "Synthetic voices, voice cloning and generated music."]
+        ] },
+        { name: "Craft", items: [
+          ["describe-style", "Describing style and composition", "Precise words for light, mood and framing steer the result."],
+          ["iterate", "Iterating and editing", "Generate many, pick the best, then refine. It's rarely right first time."],
+          ["mix-own-work", "Mixing AI with your own work", "Use AI for parts of the process and keep your hand in the rest."]
+        ] },
+        { name: "Rights and credit", items: [
+          ["copyright", "Copyright and AI", "Who owns AI-assisted work, and what training on others' work means."],
+          ["licensing", "Licensing and commercial use", "Check each tool's terms before you sell what you make."],
+          ["labelling", "Labelling AI-made content", "Content Credentials show how a piece of media was made."]
+        ] }
+      ], links: [["Copyright and AI (US Copyright Office)", "https://www.copyright.gov/ai/"], ["Content Credentials", "https://contentcredentials.org/"], ["Two Minute Papers (videos on new models)", "https://www.youtube.com/@TwoMinutePapers"]], related: ["everyday", "safety", "product"] }
     ] },
-    { id: "engineer", name: "AI engineer", focus: true, depth: "Build it. Tick a concept once it works in a project of yours. Groups are in a suggested learning order.", color: "var(--engineer)", groups: [
-      { name: "1 · Structured output", where: "Start with", link: ["Anthropic prompt engineering guide", "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview"], items: [["prompting-systems", "Prompting for systems, not chats"], ["schemas", "Schemas, validation and retries"], ["logging", "Logging every call: inputs, outputs, tokens, latency"]] },
-      { name: "2 · Context and evals", where: "Start with", link: ["Your AI Product Needs Evals (Hamel Husain)", "https://hamel.dev/blog/posts/evals/"], items: [["context-caching", "Context engineering and prompt caching"], ["error-analysis", "Error analysis on real outputs"], ["judges", "Code checks and calibrated LLM judges"], ["tracing", "Tracing and observability"]] },
-      { name: "3 · Tools and agents", where: "Start with", link: ["Building Effective AI Agents (Anthropic)", "https://www.anthropic.com/research/building-effective-agents"], items: [["tool-design", "Designing tools for agents"], ["workflows", "Workflows vs agents, and when to pick each"], ["approval", "Human approval before the agent writes"], ["mcp-servers", "MCP servers"]] },
-      { name: "4 · Memory and retrieval", where: "Start with", link: ["Systematically Improving RAG (Jason Liu)", "https://jxnl.co/writing/2024/05/22/systematically-improving-your-rag/"], items: [["pgvector", "Embeddings and vector search in practice"], ["hybrid", "Hybrid search and reranking"], ["recall", "Retrieval metrics such as recall@k"]] },
-      { name: "5 · Production", where: "Start with", link: ["OWASP Top 10 for LLM Applications", "https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/"], items: [["ci-evals", "Evals in CI"], ["fallbacks", "Fallbacks, cost and latency limits"], ["injection", "Prompt injection and the OWASP LLM Top 10"]] }
+    { id: "shape", name: "Shape AI", blurb: "Deciding what gets built, how it behaves and what rules it follows.", color: "var(--shape)", personas: [
+      { id: "product", name: "Product and design", question: "What should we build with AI, and how will people experience it?", who: "Product managers, designers and founders deciding which AI features to ship.", groups: [
+        { name: "Finding the right problem", items: [
+          ["ai-fit", "What AI is good and bad at", "It suits fuzzy language tasks, and often not exact, high-stakes ones."],
+          ["ai-vs-rules", "AI or plain software?", "If simple rules solve the problem, they're cheaper and more predictable."],
+          ["build-buy", "Build, buy or call an API", "Most products start on a hosted model, not one of their own."]
+        ] },
+        { name: "Designing for AI", items: [
+          ["design-for-errors", "Designing for wrong answers", "Plan how people notice, correct and recover from mistakes."],
+          ["show-sources", "Showing sources and uncertainty", "Citations and confidence cues help people judge how far to trust it."],
+          ["human-control", "Keeping people in control", "Previews, undo and approval before AI acts on someone's behalf."]
+        ] },
+        { name: "Measuring quality", items: [
+          ["define-good", "Defining what good looks like", "Write down quality criteria before you judge outputs."],
+          ["evals-product", "Evals", "Repeatable tests that show whether a change made things better."],
+          ["unit-economics", "Cost and speed per use", "Every AI call costs money and time, and both shape the design."]
+        ] }
+      ], links: [["People + AI Guidebook (Google PAIR)", "https://pair.withgoogle.com/guidebook/"], ["Your AI Product Needs Evals (Hamel Husain)", "https://hamel.dev/blog/posts/evals/"], ["Patterns for LLM systems and products (Eugene Yan)", "https://eugeneyan.com/writing/llm-patterns/"]], related: ["ai-engineer", "leader", "safety"] },
+      { id: "leader", name: "Business leader", question: "Where does AI create value for us, and what are the risks?", who: "Founders, executives and managers making decisions about adopting AI.", groups: [
+        { name: "Strategy", items: [
+          ["value", "Where AI creates value", "Lower costs, new products or faster decisions, and how to tell which."],
+          ["make-or-buy", "Build, buy or partner", "Off-the-shelf tools, custom builds, or vendors that do both."],
+          ["tco", "Total cost of ownership", "Licences and usage fees, plus integration, review and upkeep."]
+        ] },
+        { name: "People and change", items: [
+          ["upskilling", "Upskilling teams", "Training people to use AI well beats buying more tools."],
+          ["roles-change", "How roles and workflows change", "Which tasks move to AI, and what people do instead."],
+          ["pilots", "Pilots and measuring return", "Small, measured experiments before a company-wide rollout."]
+        ] },
+        { name: "Risk and governance", items: [
+          ["vendor-risk", "Vendor and data risk", "Where your data goes, and what happens if a vendor changes course."],
+          ["usage-policy", "Acceptable-use policy", "Clear rules on which tools, which data, and who approves."],
+          ["regulation-biz", "Regulation that applies to you", "Rules like the EU AI Act depend on your use case and market."]
+        ] }
+      ], links: [["AI For Everyone (Andrew Ng)", "https://www.coursera.org/learn/ai-for-everyone"], ["NIST AI Risk Management Framework", "https://www.nist.gov/itl/ai-risk-management-framework"], ["EU AI Act explorer and summaries", "https://artificialintelligenceact.eu/"]], related: ["product", "professional", "safety"] },
+      { id: "safety", name: "Safety, ethics and policy", question: "How do we make AI safe, fair and accountable?", who: "Policy makers, lawyers, trust and safety teams, journalists and concerned citizens.", groups: [
+        { name: "Harms", items: [
+          ["bias", "Bias and fairness", "Models can reflect and amplify unfair patterns in their data."],
+          ["misinformation", "Misinformation and deepfakes", "Cheap, convincing fakes change how we judge evidence."],
+          ["misuse", "Misuse and dual use", "The same capability can help or harm, depending on who uses it."]
+        ] },
+        { name: "Security", items: [
+          ["prompt-injection", "Prompt injection", "Hidden instructions in content can hijack an AI system."],
+          ["data-leakage", "Data leakage", "Private data can escape through prompts, outputs or tools."],
+          ["red-teaming", "Red teaming", "Deliberately attacking a system to find failures before others do."]
+        ] },
+        { name: "Governance", items: [
+          ["risk-frameworks", "Risk frameworks", "Structured ways to identify, measure and manage AI risk."],
+          ["ai-law", "AI law and regulation", "The EU AI Act and other rules set duties by level of risk."],
+          ["alignment", "Alignment and interpretability", "Research on making models do what we intend, and seeing why they don't."]
+        ] }
+      ], links: [["OWASP Top 10 for LLM Applications", "https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/"], ["NIST AI Risk Management Framework", "https://www.nist.gov/itl/ai-risk-management-framework"], ["The lethal trifecta for AI agents (Simon Willison)", "https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/"]], related: ["leader", "researcher", "ai-engineer"] }
     ] },
-    { id: "user", name: "End user", depth: "Use it well, every day.", color: "var(--user)", groups: [
-      { name: "Daily AI tools", where: "Start with", link: ["How I use LLMs to write code (Simon Willison)", "https://simonwillison.net/2025/Mar/11/using-llms-for-code/"], items: [["chat", "Chat assistants"], ["coding-agents", "Coding agents"], ["mcp-claude", "MCP tools in a desktop assistant"]] },
-      { name: "Using it well", where: "Start with", link: ["Learn Prompting", "https://learnprompting.org/"], items: [["prompt-basics", "Prompting basics"], ["checking", "Checking outputs before trusting them"], ["limits", "Knowing where models fail"]] },
-      { name: "Product sense", where: "Start with", link: ["Data Flywheels for LLM Apps (Shreya Shankar)", "https://www.sh-reya.com/blog/ai-engineering-flywheel/"], items: [["trust", "What makes users trust an AI feature"], ["feedback", "Feedback loops from users"]] }
+    { id: "build", name: "Build AI", blurb: "Making AI systems and models, from apps on top of models to the models themselves.", color: "var(--build)", personas: [
+      { id: "ai-engineer", name: "AI engineer", question: "How do I build reliable products on top of existing models?", who: "Software engineers building apps, features and agents with model APIs.", groups: [
+        { name: "Building blocks", items: [
+          ["apis-structured", "Model APIs and structured output", "Call a model from code and get data back, not prose."],
+          ["context-eng", "Context engineering", "Choosing exactly what the model sees on each call."],
+          ["tool-use", "Tool use and MCP", "Letting models call functions, APIs and other systems."]
+        ] },
+        { name: "Systems", items: [
+          ["rag", "Retrieval (RAG) and embeddings", "Fetching the right documents so answers are grounded in your data."],
+          ["agents", "Agents and workflows", "Workflows follow a fixed path. Agents choose their own next step."],
+          ["agent-memory", "Memory", "What a system keeps between conversations, and how it recalls it."]
+        ] },
+        { name: "Reliability", items: [
+          ["evals-eng", "Evals and error analysis", "Study real failures, then test for them on every change."],
+          ["observability", "Tracing and observability", "Seeing every step a system took when something goes wrong."],
+          ["cost-latency", "Cost, latency and fallbacks", "Keep it fast and affordable, and fail gracefully."]
+        ] }
+      ], links: [["Building Effective AI Agents (Anthropic)", "https://www.anthropic.com/research/building-effective-agents"], ["A Field Guide to Rapidly Improving AI Products (Hamel Husain)", "https://hamel.dev/blog/posts/field-guide/"], ["Hugging Face Agents Course", "https://huggingface.co/learn/agents-course/"]], related: ["product", "ml-engineer", "safety"] },
+      { id: "ml-engineer", name: "ML engineer and data scientist", question: "How do I train, adapt and run models myself?", who: "People who work with data and models directly, from analysis to deployment.", groups: [
+        { name: "Data", items: [
+          ["datasets", "Collecting and cleaning data", "Most of a model's quality comes from its data, not the algorithm."],
+          ["data-labelling", "Labelling and synthetic data", "Creating training examples by hand or with other models."],
+          ["splits", "Train/test splits and leakage", "Test on data the model hasn't seen, or the results mislead you."]
+        ] },
+        { name: "Models", items: [
+          ["classical-ml", "Classical machine learning", "Regression, decision trees and clustering still solve many problems best."],
+          ["fine-tuning", "Fine-tuning and LoRA", "Adapting a pretrained model to your task with less compute."],
+          ["metrics", "Evaluation metrics", "Accuracy, precision and recall, and when each one misleads."]
+        ] },
+        { name: "Running models", items: [
+          ["serving", "Serving and inference", "Running models behind an API, with tools like vLLM or Ollama."],
+          ["quantisation", "Quantisation and optimisation", "Smaller, faster models with little loss in quality."],
+          ["mlops", "MLOps", "Versioning, monitoring and retraining models in production."]
+        ] }
+      ], links: [["Practical Deep Learning for Coders (fast.ai)", "https://course.fast.ai/"], ["StatQuest (videos)", "https://www.youtube.com/@statquest"], ["Hugging Face LLM Course", "https://huggingface.co/learn/llm-course/chapter1/1"]], related: ["ai-engineer", "researcher"] },
+      { id: "researcher", name: "Researcher", question: "How do models work inside, and how do we make them better?", who: "Students and scientists studying how models learn, reason and fail.", groups: [
+        { name: "Foundations", items: [
+          ["math", "Linear algebra, probability, calculus", "The mathematics every model is built from."],
+          ["backprop", "Neural networks and backpropagation", "How networks learn, by nudging weights to reduce error."],
+          ["transformers", "Attention and transformers", "The architecture behind today's language models."]
+        ] },
+        { name: "Training at scale", items: [
+          ["pretraining", "Pretraining and scaling laws", "Bigger models and more data improve results predictably, up to a point."],
+          ["post-training", "Post-training: RLHF and DPO", "Shaping a raw model into a helpful assistant."],
+          ["reasoning", "Reasoning and test-time compute", "Letting models think longer to solve harder problems."]
+        ] },
+        { name: "Research practice", items: [
+          ["papers", "Reading papers", "Following new work, reproducing results and judging claims."],
+          ["benchmarks", "Benchmarks and their limits", "What a score measures, and what it misses."],
+          ["interpretability", "Interpretability", "Looking inside models to see which features they use."]
+        ] }
+      ], links: [["3Blue1Brown (videos)", "https://www.youtube.com/@3blue1brown"], ["Andrej Karpathy (videos)", "https://www.youtube.com/@AndrejKarpathy"], ["Mapping the Mind of a Large Language Model (Anthropic)", "https://www.anthropic.com/research/mapping-mind-language-model"]], related: ["ml-engineer", "safety"] }
     ] }
   ];
-  var KEY = "ai-concept-map-done";
-  var done = new Set();
-  var stored = true;
-  try { var l = JSON.parse(localStorage.getItem(KEY) || "[]"); if (Array.isArray(l)) done = new Set(l); } catch (e) { stored = false; }
+
+  var PERSONAS = {};
+  FAMILIES.forEach(function (f) { f.personas.forEach(function (p) { p.family = f; PERSONAS[p.id] = p; }); });
+
+  var KEY = "ai-map-progress";
+  var done = new Set(), stored = true, armed = false;
+  try { var saved = JSON.parse(localStorage.getItem(KEY) || "[]"); if (Array.isArray(saved)) done = new Set(saved); } catch (e) { stored = false; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(Array.from(done))); stored = true; } catch (e) { stored = false; } }
+
   var app = document.getElementById("app");
-  var armed = false;
 
   function el(tag, attrs, kids) {
     var n = document.createElement(tag);
     if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (attrs[k] == null) return;
       if (k === "text") n.textContent = attrs[k];
       else if (k === "class") n.className = attrs[k];
       else n.setAttribute(k, attrs[k]);
     });
-    (kids || []).forEach(function (c) { if (c) n.appendChild(c); });
+    (kids || []).forEach(function (c) { if (c) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
     return n;
   }
-  function ids(p) { var a = []; p.groups.forEach(function (g) { g.items.forEach(function (i) { a.push(i[0]); }); }); return a; }
+  function itemIds(groups) { var a = []; groups.forEach(function (g) { g.items.forEach(function (i) { a.push(i[0]); }); }); return a; }
   function countDone(list) { return list.filter(function (i) { return done.has(i); }).length; }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(Array.from(done))); stored = true; } catch (e) { stored = false; } }
+  function allIds() { var a = BASICS.items.map(function (i) { return i[0]; }); Object.keys(PERSONAS).forEach(function (k) { a = a.concat(itemIds(PERSONAS[k].groups)); }); return a; }
 
-  function tile(label, list, color, tag) {
-    var d = countDone(list), t = list.length, pct = t ? Math.round(d / t * 100) : 0;
-    return el("div", { class: "tile" }, [
-      el("div", { class: "label" }, [el("span", { text: label }), tag ? el("span", { class: "focus-tag", text: tag }) : null]),
-      el("div", { class: "num" }, [document.createTextNode(d + " "), el("small", { text: "of " + t })]),
-      el("div", { class: "bar", role: "img", "aria-label": pct + "% done" }, [el("span", { style: "width:" + pct + "%;background:" + color })])
-    ]);
+  function current() { var h = location.hash.replace("#", ""); return PERSONAS[h] ? h : "everyday"; }
+
+  function conceptList(items) {
+    return el("ul", { class: "concepts" }, items.map(function (i) {
+      var box = el("input", { type: "checkbox", id: "c-" + i[0] });
+      box.checked = done.has(i[0]);
+      box.addEventListener("change", function () {
+        if (box.checked) done.add(i[0]); else done.delete(i[0]);
+        save(); render("c-" + i[0]);
+      });
+      return el("li", null, [el("label", { for: "c-" + i[0] }, [box, el("span", null, [el("span", { class: "name", text: i[1] }), el("span", { class: "note", text: i[2] })])])]);
+    }));
+  }
+  function linkRow(links, label) {
+    return el("div", { class: "links" }, [el("span", { text: label })].concat(links.map(function (l) {
+      return el("a", { href: l[1], target: "_blank", rel: "noopener", text: l[0] });
+    })));
   }
 
-  function render(focusId) {
-    var all = [];
-    DATA.forEach(function (p) { all = all.concat(ids(p)); });
+  function render(focusId, scroll) {
+    var sel = PERSONAS[current()];
+    var all = allIds(), total = countDone(all);
+
     var reset = el("button", { class: "reset" + (armed ? " armed" : ""), type: "button", id: "reset", text: armed ? "Click again to clear all ticks" : "Clear ticks" });
     reset.addEventListener("click", function () {
       if (!armed) { armed = true; render("reset"); setTimeout(function () { if (armed) { armed = false; render(); } }, 4000); return; }
       armed = false; done = new Set(); save(); render("reset");
     });
-    app.replaceChildren(
-      el("header", null, [
-        el("h1", { text: "AI Engineering Concept Map" }),
-        el("p", { text: "33 concepts on the way to applied AI engineering, grouped by who uses them. Go deep on the AI engineer column. Tick what you can do and watch your progress by persona." }),
-        el("div", { class: "actions" }, [
-          el("span", { class: "status", "aria-live": "polite", text: stored ? "Your ticks are saved in this browser." : "This browser blocks storage, so ticks will reset when you leave." }),
-          reset
-        ])
+
+    var intro = el("header", { class: "intro" }, [
+      el("p", { class: "eyebrow", text: "A map for people new to AI" }),
+      el("h1", { text: "AI Map" }),
+      el("p", { text: "AI looks different depending on where you stand. Someone using a chat app, a lawyer drafting policy and a researcher training models all need different ideas. This map shows nine perspectives, each with the concepts that matter from there. Start with the basics everyone shares, then explore the ones closest to you, and a few that aren't." }),
+      el("div", { class: "toolbar" }, [
+        el("span", null, ["You know ", el("span", { class: "total", text: total + " of " + all.length }), " concepts."]),
+        el("span", { "aria-live": "polite", text: stored ? "Ticks are saved in this browser only." : "This browser blocks storage, so ticks reset when you leave." }),
+        reset
+      ])
+    ]);
+
+    var basicsIds = BASICS.items.map(function (i) { return i[0]; });
+    var basics = el("section", { "aria-labelledby": "basics-h" }, [
+      el("div", { class: "section-head" }, [
+        el("p", { class: "eyebrow", text: "Start here · " + countDone(basicsIds) + " of " + basicsIds.length }),
+        el("h2", { id: "basics-h", text: BASICS.name }),
+        el("p", { text: "Six ideas that every perspective builds on." })
       ]),
-      el("section", { class: "tiles", "aria-label": "Progress by persona" }, [
-        tile("All concepts", all, "var(--ink)"),
-        tile("AI engineer", ids(DATA[1]), DATA[1].color, "Focus"),
-        tile("Research scientist", ids(DATA[0]), DATA[0].color),
-        tile("End user", ids(DATA[2]), DATA[2].color)
+      el("div", { class: "panel basics" }, [conceptList(BASICS.items), linkRow(BASICS.links, "Start with:")])
+    ]);
+
+    var map = el("section", { "aria-labelledby": "map-h" }, [
+      el("div", { class: "section-head" }, [
+        el("p", { class: "eyebrow", text: "Nine perspectives" }),
+        el("h2", { id: "map-h", text: "Pick a way to look at AI" }),
+        el("p", { text: "They run from using AI, to shaping how it's built and governed, to building it. None is the right one. Most people end up with two or three." })
       ]),
-      el("section", { class: "columns" }, DATA.map(function (p) {
-        return el("section", { class: "persona" + (p.focus ? " focus" : ""), style: "--c:" + p.color, "aria-labelledby": "h-" + p.id }, [
-          el("h2", { id: "h-" + p.id, text: p.name }),
-          el("p", { class: "depth", text: p.depth })
-        ].concat(p.groups.map(function (g) {
-          var gIds = g.items.map(function (i) { return i[0]; }), gd = countDone(gIds);
-          return el("div", { class: "group" + (gd === gIds.length ? " complete" : "") }, [
-            el("div", { class: "group-head" }, [el("h3", { text: g.name }), el("span", { class: "count", text: gd + "/" + gIds.length })]),
-            el("p", { class: "where" }, [document.createTextNode(g.where + ": "), el("a", { href: g.link[1], target: "_blank", rel: "noopener", text: g.link[0] })]),
-            el("ul", null, g.items.map(function (i) {
-              var box = el("input", { type: "checkbox", id: "c-" + i[0] });
-              box.checked = done.has(i[0]);
-              box.addEventListener("change", function () {
-                if (box.checked) done.add(i[0]); else done.delete(i[0]);
-                save(); render("c-" + i[0]);
-              });
-              return el("li", null, [el("label", { for: "c-" + i[0] }, [box, el("span", { text: i[1] })])]);
-            }))
+      el("div", { class: "map" }, FAMILIES.map(function (f) {
+        return el("div", { class: "family", style: "--c:" + f.color }, [
+          el("div", { class: "family-head" }, [el("h3", { text: f.name }), el("p", { text: f.blurb })])
+        ].concat(f.personas.map(function (p) {
+          var ids = itemIds(p.groups), d = countDone(ids), pct = Math.round(d / ids.length * 100);
+          return el("a", { class: "card", href: "#" + p.id, "aria-current": p === sel ? "true" : "false" }, [
+            el("span", { class: "card-name", text: p.name }),
+            el("span", { class: "q", text: p.question }),
+            el("span", { class: "prog" }, [el("span", { class: "bar", "aria-hidden": "true" }, [el("span", { style: "width:" + pct + "%" })]), el("span", { text: d + "/" + ids.length })])
           ]);
         })));
+      }))
+    ]);
+
+    var detail = el("section", { class: "panel detail", id: "perspective", style: "--c:" + sel.family.color, "aria-labelledby": "detail-h" }, [
+      el("div", { class: "detail-head" }, [
+        el("span", { class: "tag", text: sel.family.name }),
+        el("h2", { id: "detail-h", text: sel.name }),
+        el("p", { class: "q", text: sel.question }),
+        el("p", { class: "who", text: "Who looks at AI this way: " + sel.who })
+      ]),
+      el("div", { class: "groups" }, sel.groups.map(function (g) {
+        var ids = g.items.map(function (i) { return i[0]; });
+        return el("div", { class: "group" }, [
+          el("div", { class: "group-head" }, [el("h3", { text: g.name }), el("span", { class: "count", text: countDone(ids) + "/" + ids.length })]),
+          conceptList(g.items)
+        ]);
       })),
-      el("footer", null, [
-        document.createTextNode("Resources picked from the "),
-        el("a", { href: "https://github.com/louisfb01/start-ai-engineering", target: "_blank", rel: "noopener", text: "start-ai-engineering" }),
-        document.createTextNode(" roadmap. Source for this page: "),
-        el("a", { href: "https://github.com/and/ai-map", target: "_blank", rel: "noopener", text: "github.com/and/ai-map" }),
-        document.createTextNode(".")
-      ])
-    );
-    if (focusId) { var f = document.getElementById(focusId); if (f) f.focus(); }
+      linkRow(sel.links, "Start with:"),
+      el("div", { class: "related" }, [el("span", { text: "Also look at:" })].concat(sel.related.map(function (r) {
+        return el("a", { href: "#" + r, text: PERSONAS[r].name });
+      })))
+    ]);
+
+    var footer = el("footer", null, [
+      el("p", null, ["Some resources were picked from the ", el("a", { href: "https://github.com/louisfb01/start-ai-engineering", target: "_blank", rel: "noopener", text: "start-ai-engineering" }), " roadmap. Suggestions welcome on ", el("a", { href: "https://github.com/and/ai-map", target: "_blank", rel: "noopener", text: "GitHub" }), "."])
+    ]);
+
+    app.replaceChildren(intro, basics, map, detail, footer);
+    if (focusId) { var f = document.getElementById(focusId); if (f) f.focus({ preventScroll: true }); }
+    if (scroll) {
+      var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      detail.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    }
   }
-  render();
+
+  window.addEventListener("hashchange", function () { render(null, true); });
+  render(null, !!PERSONAS[location.hash.replace("#", "")]);
 })();
 </script>
 </body>

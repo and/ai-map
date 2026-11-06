@@ -1,19 +1,35 @@
-# AI Engineering Concept Map
+# AI Map
 
-A single-page checklist of 33 concepts on the way to applied AI engineering. It groups them by persona so you can see where to focus:
+A map of AI for people new to it. AI looks different depending on where you stand, so the map shows it from nine perspectives. Each one lists the concepts that matter from that view, with a checklist to track what you know.
 
-- **AI engineer:** build it. Structured output, evals, tools and agents, retrieval, and production, in a suggested learning order.
-- **Research scientist:** know it well enough to explain it. Model internals, training, reasoning and inference.
-- **End user:** use it well every day. Daily tools, using them carefully, and product sense.
+**Live page:** https://and.github.io/ai-map/
 
-Each group links to one resource to start with. Tick concepts as you learn them, and the page shows your progress overall and per persona. Ticks are saved in your own browser and never leave it.
+## The perspectives
 
-## Use it
+Everyone starts with six shared basics: what AI, machine learning and LLMs are, training vs using a model, tokens and context windows, why models make things up, prompting, and what happens to the data you share.
 
-Open the live page: https://and.github.io/ai-map/
+| Family | Perspective | The question it asks |
+| --- | --- | --- |
+| Use AI | Everyday user | How can AI help me day to day, and when can I trust it? |
+| Use AI | Professional at work | How do I use AI to do my job better? |
+| Use AI | Creator | How do I make images, video, music and writing with AI? |
+| Shape AI | Product and design | What should we build with AI, and how will people experience it? |
+| Shape AI | Business leader | Where does AI create value for us, and what are the risks? |
+| Shape AI | Safety, ethics and policy | How do we make AI safe, fair and accountable? |
+| Build AI | AI engineer | How do I build reliable products on top of existing models? |
+| Build AI | ML engineer and data scientist | How do I train, adapt and run models myself? |
+| Build AI | Researcher | How do models work inside, and how do we make them better? |
 
-Or download `index.html` and open it in any browser. It's one file, with no build step and no dependencies apart from Google Fonts.
+Each perspective has nine concepts in three groups, a few free resources to start with, and links to related perspectives. That's 87 concepts in all.
+
+## How it works
+
+It's one `index.html` file, with no build step and no dependencies apart from Google Fonts. Ticks are saved in your own browser's local storage and never leave it. To link to a specific perspective, add its name to the URL, for example `#researcher`.
+
+## Contributing
+
+Suggestions for perspectives, concepts or better starter resources are welcome as issues or pull requests.
 
 ## Credits
 
-The resources were picked from Louis-François Bouchard's [start-ai-engineering](https://github.com/louisfb01/start-ai-engineering) roadmap.
+Some resources were picked from Louis-François Bouchard's [start-ai-engineering](https://github.com/louisfb01/start-ai-engineering) roadmap.
