@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Engineering Concept Map</title>
+<meta name="description" content="33 AI engineering concepts grouped by persona (research scientist, AI engineer, end user), with a progress checklist.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: summary tiles on top, then three persona columns; the AI engineer column is wider and tinted because it is where applied work happens. */
+:root {
+  --bg: #f4f6f5;
+  --surface: #ffffff;
+  --ink: #1a201f;
+  --muted: #5a6563;
+  --line: #d6dddb;
+  --engineer: #0e6b5c;
+  --research: #6a55a8;
+  --user: #a3621a;
+  --engineer-tint: #e3f0ec;
+  --font-display: "IBM Plex Serif", Georgia, serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121615; --surface: #1a201f; --ink: #e7ecea; --muted: #9aa6a3; --line: #2e3836;
+    --engineer: #4fb8a3; --research: #a896e0; --user: #e0a35a; --engineer-tint: #17302b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121615; --surface: #1a201f; --ink: #e7ecea; --muted: #9aa6a3; --line: #2e3836;
+  --engineer: #4fb8a3; --research: #a896e0; --user: #e0a35a; --engineer-tint: #17302b;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+main { max-width: 1120px; margin: 0 auto; padding: 32px 20px 56px; display: grid; gap: 28px; }
+header { display: grid; gap: 8px; max-width: 68ch; }
+h1 { font-family: var(--font-display); font-weight: 600; font-size: 30px; line-height: 1.2; margin: 0; text-wrap: balance; }
+header p { margin: 0; color: var(--muted); }
+.status { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 6px; }
+.tile .label { font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+.tile .num { font-family: var(--font-mono); font-size: 22px; font-variant-numeric: tabular-nums; }
+.tile .num small { font-size: 14px; color: var(--muted); }
+.bar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.bar span { display: block; height: 100%; border-radius: 3px; transition: width .25s ease; }
+.focus-tag { font-family: var(--font-mono); font-size: 11px; color: var(--engineer); text-transform: uppercase; letter-spacing: .06em; }
+.columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.persona { border: 1px solid var(--line); border-top: 4px solid var(--c); border-radius: 10px; padding: 16px; display: grid; gap: 12px; background: var(--surface); }
+.persona.focus { background: var(--engineer-tint); border-color: var(--engineer); border-width: 2px; border-top-width: 4px; }
+.persona h2 { font-family: var(--font-display); font-size: 20px; font-weight: 600; margin: 0; }
+.persona .depth { margin: 0; font-size: 13px; color: var(--muted); }
+.group { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: grid; gap: 8px; }
+.group-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.group h3 { margin: 0; font-size: 15px; font-weight: 600; }
+.group .count { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.group .where { margin: -4px 0 0; font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); }
+.group ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.group label { display: flex; gap: 10px; align-items: flex-start; padding: 5px 6px; margin: 0 -6px; border-radius: 6px; cursor: pointer; }
+.group label:hover { background: var(--bg); }
+.group input { margin: 3px 0 0; width: 16px; height: 16px; accent-color: var(--c); flex: none; cursor: pointer; }
+.group input:focus-visible { outline: 2px solid var(--c); outline-offset: 2px; }
+.group input:checked + span { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line); }
+.group.complete { border-color: var(--c); }
+footer { color: var(--muted); font-size: 13px; max-width: 68ch; }
+footer a { color: var(--engineer); }
+@media (max-width: 860px) { .columns { grid-template-columns: 1fr; } .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (prefers-reduced-motion: reduce) { .bar span { transition: none; } }
+
+.where a { color: var(--c); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+button.reset { font: inherit; font-size: 13px; color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+button.reset:hover { color: var(--ink); border-color: var(--muted); }
+button.reset:focus-visible { outline: 2px solid var(--engineer); outline-offset: 2px; }
+button.reset.armed { color: var(--user); border-color: var(--user); }
+</style>
+</head>
+<body>
+<main id="app"><noscript>This page needs JavaScript to show the checklist.</noscript></main>
+<script>
+(function () {
+  var DATA = [
+    { id: "research", name: "Research scientist", depth: "Know it well enough to explain it. Applied roles rarely need more.", color: "var(--research)", groups: [
+      { name: "Model internals", where: "Start with", link: ["Intro to Large Language Models (Karpathy)", "https://www.youtube.com/watch?v=zjkBMFhNj_g"], items: [["tokens", "Tokens and embeddings"], ["attention", "Attention and transformers"], ["pretraining", "Pretraining and scaling"]] },
+      { name: "Training", where: "Start with", link: ["How to Fine-Tune LLMs (Phil Schmid)", "https://www.philschmid.de/fine-tune-llms-in-2025"], items: [["lora", "Fine-tuning and LoRA"], ["rlhf", "RLHF and DPO"], ["curation", "Dataset curation"]] },
+      { name: "Reasoning and inference", where: "Start with", link: ["Why We Think (Lilian Weng)", "https://lilianweng.github.io/posts/2025-05-01-thinking/"], items: [["test-time", "Test-time compute and reasoning models"], ["inference", "Inference optimization"]] }
+    ] },
+    { id: "engineer", name: "AI engineer", focus: true, depth: "Build it. Tick a concept once it works in a project of yours. Groups are in a suggested learning order.", color: "var(--engineer)", groups: [
+      { name: "1 · Structured output", where: "Start with", link: ["Anthropic prompt engineering guide", "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview"], items: [["prompting-systems", "Prompting for systems, not chats"], ["schemas", "Schemas, validation and retries"], ["logging", "Logging every call: inputs, outputs, tokens, latency"]] },
+      { name: "2 · Context and evals", where: "Start with", link: ["Your AI Product Needs Evals (Hamel Husain)", "https://hamel.dev/blog/posts/evals/"], items: [["context-caching", "Context engineering and prompt caching"], ["error-analysis", "Error analysis on real outputs"], ["judges", "Code checks and calibrated LLM judges"], ["tracing", "Tracing and observability"]] },
+      { name: "3 · Tools and agents", where: "Start with", link: ["Building Effective AI Agents (Anthropic)", "https://www.anthropic.com/research/building-effective-agents"], items: [["tool-design", "Designing tools for agents"], ["workflows", "Workflows vs agents, and when to pick each"], ["approval", "Human approval before the agent writes"], ["mcp-servers", "MCP servers"]] },
+      { name: "4 · Memory and retrieval", where: "Start with", link: ["Systematically Improving RAG (Jason Liu)", "https://jxnl.co/writing/2024/05/22/systematically-improving-your-rag/"], items: [["pgvector", "Embeddings and vector search in practice"], ["hybrid", "Hybrid search and reranking"], ["recall", "Retrieval metrics such as recall@k"]] },
+      { name: "5 · Production", where: "Start with", link: ["OWASP Top 10 for LLM Applications", "https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/"], items: [["ci-evals", "Evals in CI"], ["fallbacks", "Fallbacks, cost and latency limits"], ["injection", "Prompt injection and the OWASP LLM Top 10"]] }
+    ] },
+    { id: "user", name: "End user", depth: "Use it well, every day.", color: "var(--user)", groups: [
+      { name: "Daily AI tools", where: "Start with", link: ["How I use LLMs to write code (Simon Willison)", "https://simonwillison.net/2025/Mar/11/using-llms-for-code/"], items: [["chat", "Chat assistants"], ["coding-agents", "Coding agents"], ["mcp-claude", "MCP tools in a desktop assistant"]] },
+      { name: "Using it well", where: "Start with", link: ["Learn Prompting", "https://learnprompting.org/"], items: [["prompt-basics", "Prompting basics"], ["checking", "Checking outputs before trusting them"], ["limits", "Knowing where models fail"]] },
+      { name: "Product sense", where: "Start with", link: ["Data Flywheels for LLM Apps (Shreya Shankar)", "https://www.sh-reya.com/blog/ai-engineering-flywheel/"], items: [["trust", "What makes users trust an AI feature"], ["feedback", "Feedback loops from users"]] }
+    ] }
+  ];
+  var KEY = "ai-concept-map-done";
+  var done = new Set();
+  var stored = true;
+  try { var l = JSON.parse(localStorage.getItem(KEY) || "[]"); if (Array.isArray(l)) done = new Set(l); } catch (e) { stored = false; }
+  var app = document.getElementById("app");
+  var armed = false;
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === "text") n.textContent = attrs[k];
+      else if (k === "class") n.className = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    });
+    (kids || []).forEach(function (c) { if (c) n.appendChild(c); });
+    return n;
+  }
+  function ids(p) { var a = []; p.groups.forEach(function (g) { g.items.forEach(function (i) { a.push(i[0]); }); }); return a; }
+  function countDone(list) { return list.filter(function (i) { return done.has(i); }).length; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(Array.from(done))); stored = true; } catch (e) { stored = false; } }
+
+  function tile(label, list, color, tag) {
+    var d = countDone(list), t = list.length, pct = t ? Math.round(d / t * 100) : 0;
+    return el("div", { class: "tile" }, [
+      el("div", { class: "label" }, [el("span", { text: label }), tag ? el("span", { class: "focus-tag", text: tag }) : null]),
+      el("div", { class: "num" }, [document.createTextNode(d + " "), el("small", { text: "of " + t })]),
+      el("div", { class: "bar", role: "img", "aria-label": pct + "% done" }, [el("span", { style: "width:" + pct + "%;background:" + color })])
+    ]);
+  }
+
+  function render(focusId) {
+    var all = [];
+    DATA.forEach(function (p) { all = all.concat(ids(p)); });
+    var reset = el("button", { class: "reset" + (armed ? " armed" : ""), type: "button", id: "reset", text: armed ? "Click again to clear all ticks" : "Clear ticks" });
+    reset.addEventListener("click", function () {
+      if (!armed) { armed = true; render("reset"); setTimeout(function () { if (armed) { armed = false; render(); } }, 4000); return; }
+      armed = false; done = new Set(); save(); render("reset");
+    });
+    app.replaceChildren(
+      el("header", null, [
+        el("h1", { text: "AI Engineering Concept Map" }),
+        el("p", { text: "33 concepts on the way to applied AI engineering, grouped by who uses them. Go deep on the AI engineer column. Tick what you can do and watch your progress by persona." }),
+        el("div", { class: "actions" }, [
+          el("span", { class: "status", "aria-live": "polite", text: stored ? "Your ticks are saved in this browser." : "This browser blocks storage, so ticks will reset when you leave." }),
+          reset
+        ])
+      ]),
+      el("section", { class: "tiles", "aria-label": "Progress by persona" }, [
+        tile("All concepts", all, "var(--ink)"),
+        tile("AI engineer", ids(DATA[1]), DATA[1].color, "Focus"),
+        tile("Research scientist", ids(DATA[0]), DATA[0].color),
+        tile("End user", ids(DATA[2]), DATA[2].color)
+      ]),
+      el("section", { class: "columns" }, DATA.map(function (p) {
+        return el("section", { class: "persona" + (p.focus ? " focus" : ""), style: "--c:" + p.color, "aria-labelledby": "h-" + p.id }, [
+          el("h2", { id: "h-" + p.id, text: p.name }),
+          el("p", { class: "depth", text: p.depth })
+        ].concat(p.groups.map(function (g) {
+          var gIds = g.items.map(function (i) { return i[0]; }), gd = countDone(gIds);
+          return el("div", { class: "group" + (gd === gIds.length ? " complete" : "") }, [
+            el("div", { class: "group-head" }, [el("h3", { text: g.name }), el("span", { class: "count", text: gd + "/" + gIds.length })]),
+            el("p", { class: "where" }, [document.createTextNode(g.where + ": "), el("a", { href: g.link[1], target: "_blank", rel: "noopener", text: g.link[0] })]),
+            el("ul", null, g.items.map(function (i) {
+              var box = el("input", { type: "checkbox", id: "c-" + i[0] });
+              box.checked = done.has(i[0]);
+              box.addEventListener("change", function () {
+                if (box.checked) done.add(i[0]); else done.delete(i[0]);
+                save(); render("c-" + i[0]);
+              });
+              return el("li", null, [el("label", { for: "c-" + i[0] }, [box, el("span", { text: i[1] })])]);
+            }))
+          ]);
+        })));
+      })),
+      el("footer", null, [
+        document.createTextNode("Resources picked from the "),
+        el("a", { href: "https://github.com/louisfb01/start-ai-engineering", target: "_blank", rel: "noopener", text: "start-ai-engineering" }),
+        document.createTextNode(" roadmap. Source for this page: "),
+        el("a", { href: "https://github.com/and/ai", target: "_blank", rel: "noopener", text: "github.com/and/ai" }),
+        document.createTextNode(".")
+      ])
+    );
+    if (focusId) { var f = document.getElementById(focusId); if (f) f.focus(); }
+  }
+  render();
+})();
+</script>
+</body>
+</html>
