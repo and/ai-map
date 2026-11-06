@@ -7,7 +7,7 @@
 <meta name="description" content="AI seen from nine perspectives, from everyday user to researcher, with the concepts that matter from each and a checklist to track what you know.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
 <style>
 /* Layout idea: shared basics first, then a 3x3 map of perspectives (three families: build, shape, use), then the selected perspective in full. */
 :root {
@@ -22,7 +22,6 @@
   --base: #33403c;
   --font-display: "IBM Plex Serif", Georgia, serif;
   --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
@@ -47,16 +46,16 @@ h1, h2, h3 { text-wrap: balance; }
 .intro h1 { font-family: var(--font-display); font-weight: 600; font-size: 36px; line-height: 1.15; margin: 0; }
 .intro p { margin: 0; max-width: 66ch; color: var(--muted); font-size: 16px; }
 .toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: 13px; color: var(--muted); }
-.toolbar .total { font-family: var(--font-mono); color: var(--ink); font-variant-numeric: tabular-nums; }
-.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.toolbar .total { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.eyebrow { font-size: 14px; color: var(--muted); margin: 0; }
 .section-head { display: grid; gap: 4px; margin-bottom: 14px; }
 .section-head h2 { font-family: var(--font-display); font-size: 24px; font-weight: 600; margin: 0; }
 .section-head p { margin: 0; color: var(--muted); max-width: 66ch; }
 button.reset { font: inherit; font-size: 13px; color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 3px 10px; cursor: pointer; }
 button.reset:hover { color: var(--ink); border-color: var(--muted); }
 button.reset.armed { color: var(--use); border-color: var(--use); }
-.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
-.panel.basics { border-top: 4px solid var(--base); --c: var(--base); }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 20px; }
+.panel.basics { --c: var(--base); }
 .concepts { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
 .basics .concepts { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px 20px; }
 .concepts label { display: flex; gap: 10px; align-items: flex-start; padding: 6px 8px; margin: 0 -8px; border-radius: 8px; cursor: pointer; }
@@ -71,31 +70,31 @@ input:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid 
 .links a { color: var(--c); text-underline-offset: 2px; text-decoration-thickness: 1px; }
 .map { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .family { display: grid; gap: 10px; align-content: start; }
-.family-head { border-top: 4px solid var(--c); padding-top: 10px; }
+.family-head { padding-bottom: 2px; }
 .family-head h3 { margin: 0; font-family: var(--font-display); font-size: 19px; font-weight: 600; color: var(--c); }
 .family-head p { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
-a.card { display: grid; gap: 8px; text-decoration: none; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+a.card { display: grid; gap: 8px; text-decoration: none; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; }
 a.card:hover { border-color: var(--c); }
-a.card[aria-current="true"] { border-color: var(--c); box-shadow: inset 4px 0 0 var(--c); }
+a.card[aria-current="true"] { border-color: var(--c); background: var(--bg); }
+a.card[aria-current="true"] .card-name { color: var(--c); }
 .card .card-name { font-weight: 600; font-size: 16px; }
 .card .q { font-size: 13.5px; color: var(--muted); }
-.card .prog { display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.bar { flex: 1; height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; }
-.bar span { display: block; height: 100%; background: var(--c); border-radius: 3px; transition: width .25s ease; }
-.detail { border-top: 4px solid var(--c); scroll-margin-top: 16px; }
+.card .prog { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.bar { flex: 1; height: 4px; background: var(--line); overflow: hidden; }
+.bar span { display: block; height: 100%; background: var(--c); transition: width .25s ease; }
+.detail { scroll-margin-top: 16px; }
 .detail-head { display: grid; gap: 6px; margin-bottom: 18px; }
 .detail-head h2 { font-family: var(--font-display); font-size: 28px; font-weight: 600; margin: 0; }
 .detail-head .q { font-size: 17px; margin: 0; }
 .detail-head .who { margin: 0; color: var(--muted); max-width: 66ch; }
-.tag { justify-self: start; font-family: var(--font-mono); font-size: 12px; color: var(--c); border: 1px solid var(--c); border-radius: 999px; padding: 1px 10px; }
+.tag { font-size: 14px; font-weight: 600; color: var(--c); }
 .groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .group { display: grid; gap: 6px; align-content: start; }
 .group-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
 .group-head h3 { margin: 0; font-size: 15px; font-weight: 600; }
-.count { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.related { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 14px; font-size: 13px; color: var(--muted); }
-.related a { text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 2px 12px; color: var(--ink); }
-.related a:hover { border-color: var(--ink); }
+.count { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.related { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; margin-top: 14px; font-size: 13px; color: var(--muted); }
+.related a { color: var(--ink); text-underline-offset: 2px; text-decoration-thickness: 1px; }
 footer { color: var(--muted); font-size: 13px; max-width: 70ch; display: grid; gap: 6px; }
 footer a { text-underline-offset: 2px; }
 @media (max-width: 900px) {
@@ -347,7 +346,6 @@ footer a { text-underline-offset: 2px; }
     });
 
     var intro = el("header", { class: "intro" }, [
-      el("p", { class: "eyebrow", text: "A map for people new to AI" }),
       el("h1", { text: "AI Map" }),
       el("p", { text: "AI looks different depending on where you stand. Someone using a chat app, a lawyer drafting policy and a researcher training models all need different ideas. This map shows nine perspectives, each with the concepts that matter from there. Start with the basics everyone shares, then explore the ones closest to you, and a few that aren't." }),
       el("div", { class: "toolbar" }, [
@@ -360,7 +358,7 @@ footer a { text-underline-offset: 2px; }
     var basicsIds = BASICS.items.map(function (i) { return i[0]; });
     var basics = el("section", { "aria-labelledby": "basics-h" }, [
       el("div", { class: "section-head" }, [
-        el("p", { class: "eyebrow", text: "Start here · " + countDone(basicsIds) + " of " + basicsIds.length }),
+        el("p", { class: "eyebrow", text: "Start here. You know " + countDone(basicsIds) + " of " + basicsIds.length + "." }),
         el("h2", { id: "basics-h", text: BASICS.name }),
         el("p", { text: "Six ideas that every perspective builds on." })
       ]),
@@ -369,7 +367,6 @@ footer a { text-underline-offset: 2px; }
 
     var map = el("section", { "aria-labelledby": "map-h" }, [
       el("div", { class: "section-head" }, [
-        el("p", { class: "eyebrow", text: "Nine perspectives" }),
         el("h2", { id: "map-h", text: "Pick a way to look at AI" }),
         el("p", { text: "They run from building AI, to shaping how it's built and governed, to using it. None is the right one. Most people end up with two or three." })
       ]),
