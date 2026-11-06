@@ -61,8 +61,8 @@ Then check the six basics. They should still be the ideas every perspective buil
 - **Merging.** If two perspectives now share most of their concepts, merge them.
 - **Families.** Keep the three families unless a role genuinely fits none of them:
   - **Build AI** is for people who make models, or software on top of models. Order the perspectives from the models themselves to software built on them.
-  - **Shape AI** is for people who decide what gets built, how it behaves and what rules it follows.
-  - **Use AI** is for people who get things done with AI tools without writing code.
+  - **Shape AI** is for people who decide what gets built, how it behaves and what rules it follows. The order runs from the rules (safety, ethics and policy) through business decisions to product design.
+  - **Use AI** is for people who get things done with AI tools without writing code. The order runs from creators through professionals to everyday users.
 - **Related links.** Check that each perspective's `related` list still points to the most useful neighbours.
 
 ---

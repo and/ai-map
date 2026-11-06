@@ -13,12 +13,12 @@ Everyone starts with six shared basics: what AI, machine learning and LLMs are, 
 | Build AI | Researcher | How do models work inside, and how do we make them better? |
 | Build AI | ML engineer and data scientist | How do I train, adapt and run models myself? |
 | Build AI | AI engineer | How do I build reliable products on top of existing models? |
-| Shape AI | Product and design | What should we build with AI, and how will people experience it? |
-| Shape AI | Business leader | Where does AI create value for us, and what are the risks? |
 | Shape AI | Safety, ethics and policy | How do we make AI safe, fair and accountable? |
-| Use AI | Everyday user | How can AI help me day to day, and when can I trust it? |
-| Use AI | Professional at work | How do I use AI to do my job better? |
+| Shape AI | Business leader | Where does AI create value for us, and what are the risks? |
+| Shape AI | Product and design | What should we build with AI, and how will people experience it? |
 | Use AI | Creator | How do I make images, video, music and writing with AI? |
+| Use AI | Professional at work | How do I use AI to do my job better? |
+| Use AI | Everyday user | How can AI help me day to day, and when can I trust it? |
 
 The page opens on three tabs: Build AI, Shape AI and Use AI. Choosing one shows the perspectives inside it, and choosing a perspective opens its concepts. Each perspective has nine concepts in three groups, and links to related perspectives. That's 87 concepts in all. Every concept has a one-line explanation and one beginner-friendly link to learn it from.
 

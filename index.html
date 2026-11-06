@@ -269,23 +269,11 @@ footer a { text-underline-offset: 2px; }
       ], links: [R.effectiveAgents, R.hamelField], related: ["ml-engineer", "product", "safety"] }
     ] },
     { id: "shape", name: "Shape AI", blurb: "Deciding what gets built, how it behaves and what rules it follows.", color: "var(--shape)", personas: [
-      { id: "product", name: "Product and design", question: "What should we build with AI, and how will people experience it?", who: "Product managers, designers and founders deciding which AI features to ship.", groups: [
-        { name: "Finding the right problem", items: [
-          ["ai-fit", "What AI is good and bad at", "It suits fuzzy language tasks, and often not exact, high-stakes ones.", R.pairUserNeeds],
-          ["ai-vs-rules", "AI or plain software?", "If simple rules solve the problem, they're cheaper and more predictable.", R.pairUserNeeds],
-          ["build-buy", "Build, buy or call an API", "Most products start on a hosted model, not one of their own.", R.yanPatterns]
-        ] },
-        { name: "Designing for AI", items: [
-          ["design-for-errors", "Designing for wrong answers", "Plan how people notice, correct and recover from mistakes.", R.pairErrors],
-          ["show-sources", "Showing sources and uncertainty", "Citations and confidence cues help people judge how far to trust it.", R.pairExplain],
-          ["human-control", "Keeping people in control", "Previews, undo and approval before AI acts on someone's behalf.", R.pairGuidebook]
-        ] },
-        { name: "Measuring quality", items: [
-          ["define-good", "Defining what good looks like", "Write down quality criteria before you judge outputs.", R.hamelEvals],
-          ["evals-product", "Evals", "Repeatable tests that show whether a change made things better.", R.hamelFaq],
-          ["unit-economics", "Cost and speed per use", "Every AI call costs money and time, and both shape the design.", null]
-        ] }
-      ], links: [R.pairGuidebook, R.hamelEvals], related: ["ai-engineer", "leader", "safety"] },
+      { id: "safety", name: "Safety, ethics and policy", question: "How do we make AI safe, fair and accountable?", who: "Policy makers, lawyers, trust and safety teams, journalists and concerned citizens.", groups: [
+        { name: "Harms", items: [
+          ["bias", "Bias and fairness", "Models can reflect and amplify unfair patterns in their data.", R.ibmBias],
+          ["misinformation", "Misinformation and deepfakes", "Cheap, convincing fakes change how we judge evidence.", R.contentCredentials],
+          ["misuse", "Misuse and dual use", "The same capability can help or harm, depending on who uses it.", null],
       { id: "leader", name: "Business leader", question: "Where does AI create value for us, and what are the risks?", who: "Founders, executives and managers making decisions about adopting AI.", groups: [
         { name: "Strategy", items: [
           ["value", "Where AI creates value", "Lower costs, new products or faster decisions, and how to tell which.", R.aiForEveryone],
@@ -303,12 +291,24 @@ footer a { text-underline-offset: 2px; }
           ["regulation-biz", "Regulation that applies to you", "Rules like the EU AI Act depend on your use case and market.", R.euSummary]
         ] }
       ], links: [R.aiForEveryone, R.nistRmf, R.euExplorer], related: ["product", "professional", "safety"] },
-      { id: "safety", name: "Safety, ethics and policy", question: "How do we make AI safe, fair and accountable?", who: "Policy makers, lawyers, trust and safety teams, journalists and concerned citizens.", groups: [
-        { name: "Harms", items: [
-          ["bias", "Bias and fairness", "Models can reflect and amplify unfair patterns in their data.", R.ibmBias],
-          ["misinformation", "Misinformation and deepfakes", "Cheap, convincing fakes change how we judge evidence.", R.contentCredentials],
-          ["misuse", "Misuse and dual use", "The same capability can help or harm, depending on who uses it.", null]
+      { id: "product", name: "Product and design", question: "What should we build with AI, and how will people experience it?", who: "Product managers, designers and founders deciding which AI features to ship.", groups: [
+        { name: "Finding the right problem", items: [
+          ["ai-fit", "What AI is good and bad at", "It suits fuzzy language tasks, and often not exact, high-stakes ones.", R.pairUserNeeds],
+          ["ai-vs-rules", "AI or plain software?", "If simple rules solve the problem, they're cheaper and more predictable.", R.pairUserNeeds],
+          ["build-buy", "Build, buy or call an API", "Most products start on a hosted model, not one of their own.", R.yanPatterns]
         ] },
+        { name: "Designing for AI", items: [
+          ["design-for-errors", "Designing for wrong answers", "Plan how people notice, correct and recover from mistakes.", R.pairErrors],
+          ["show-sources", "Showing sources and uncertainty", "Citations and confidence cues help people judge how far to trust it.", R.pairExplain],
+          ["human-control", "Keeping people in control", "Previews, undo and approval before AI acts on someone's behalf.", R.pairGuidebook]
+        ] },
+        { name: "Measuring quality", items: [
+          ["define-good", "Defining what good looks like", "Write down quality criteria before you judge outputs.", R.hamelEvals],
+          ["evals-product", "Evals", "Repeatable tests that show whether a change made things better.", R.hamelFaq],
+          ["unit-economics", "Cost and speed per use", "Every AI call costs money and time, and both shape the design.", null]
+        ] }
+      ], links: [R.pairGuidebook, R.hamelEvals], related: ["ai-engineer", "leader", "safety"] }
+    ] },
         { name: "Security", items: [
           ["prompt-injection", "Prompt injection", "Hidden instructions in content can hijack an AI system.", R.owaspInjection],
           ["data-leakage", "Data leakage", "Private data can escape through prompts, outputs or tools.", R.owaspTop10],
@@ -322,23 +322,23 @@ footer a { text-underline-offset: 2px; }
       ], links: [R.owaspTop10, R.nistRmf], related: ["leader", "researcher", "ai-engineer"] }
     ] },
     { id: "use", name: "Use AI", blurb: "Getting things done with AI tools. No code needed.", color: "var(--use)", personas: [
-      { id: "everyday", name: "Everyday user", question: "How can AI help me day to day, and when can I trust it?", who: "Anyone using chat assistants to learn, write, plan or just explore.", groups: [
-        { name: "Getting started", items: [
-          ["choose-assistant", "Choosing an assistant", "Chat apps differ in strengths, privacy and price.", R.mollickRightNow],
-          ["follow-ups", "Asking follow-up questions", "Treat it as a conversation and refine, rather than starting over.", R.mollickPrompting],
-          ["multimodal-input", "Files, photos and voice", "Many assistants can read documents, look at images and talk.", R.ibmMultimodal]
+      { id: "creator", name: "Creator", question: "How do I make images, video, music and writing with AI?", who: "Artists, writers, designers, marketers and anyone who makes media.", groups: [
+        { name: "Generative media", items: [
+          ["image-gen", "Image generation and editing", "Create or change images from a text description.", R.ibmDiffusion],
+          ["video-gen", "Video generation", "Short clips from text or images, improving quickly.", R.twoMinutePapers],
+          ["audio-gen", "Voice and music", "Synthetic voices, voice cloning and generated music.", R.elevenLabs]
         ] },
-        { name: "Everyday uses", items: [
-          ["learning", "Learning and explanations", "Ask for simpler words, examples or a quiz on any topic.", R.mollick15],
-          ["writing-help", "Writing and editing", "Drafts, rewrites and tone changes, with your own voice kept.", R.mollickPrompting],
-          ["planning", "Planning and research", "Trips, meals, budgets and comparisons, with the facts checked.", R.mollickRightNow]
+        { name: "Craft", items: [
+          ["describe-style", "Describing style and composition", "Precise words for light, mood and framing steer the result.", R.learnPrompting],
+          ["iterate", "Iterating and editing", "Generate many, pick the best, then refine. It's rarely right first time.", R.mollickPrompting],
+          ["mix-own-work", "Mixing AI with your own work", "Use AI for parts of the process and keep your hand in the rest.", null]
         ] },
-        { name: "Staying safe", items: [
-          ["verify", "Checking answers", "Ask for sources and verify anything important somewhere else.", R.ibmHallucinations],
-          ["deepfakes", "Spotting deepfakes and scams", "AI makes fake voices, images and messages cheap to produce.", R.ftcVoice],
-          ["privacy-settings", "Privacy settings", "Know what the app keeps, and turn off what you don't want kept.", R.stanfordChatbot]
+        { name: "Rights and credit", items: [
+          ["copyright", "Copyright and AI", "Who owns AI-assisted work, and what training on others' work means.", R.copyrightOffice],
+          ["licensing", "Licensing and commercial use", "Check each tool's terms before you sell what you make.", null],
+          ["labelling", "Labelling AI-made content", "Content Credentials show how a piece of media was made.", R.contentCredentials]
         ] }
-      ], links: [R.mollickRightNow, R.elementsOfAi], related: ["professional", "creator", "safety"] },
+      ], links: [R.copyrightOffice, R.contentCredentials], related: ["everyday", "safety", "product"] },
       { id: "professional", name: "Professional at work", question: "How do I use AI to do my job better?", who: "People in any role bringing AI into documents, data, meetings and email.", groups: [
         { name: "Daily work", items: [
           ["summarise-docs", "Drafting and summarising", "Turn long reading into briefs, and rough notes into drafts.", R.mollick15],
@@ -356,23 +356,23 @@ footer a { text-underline-offset: 2px; }
           ["disclose", "Being open about AI use", "When colleagues and clients should know AI was involved.", null]
         ] }
       ], links: [R.anthropicAcademy, R.aiForEveryone], related: ["everyday", "leader", "product"] },
-      { id: "creator", name: "Creator", question: "How do I make images, video, music and writing with AI?", who: "Artists, writers, designers, marketers and anyone who makes media.", groups: [
-        { name: "Generative media", items: [
-          ["image-gen", "Image generation and editing", "Create or change images from a text description.", R.ibmDiffusion],
-          ["video-gen", "Video generation", "Short clips from text or images, improving quickly.", R.twoMinutePapers],
-          ["audio-gen", "Voice and music", "Synthetic voices, voice cloning and generated music.", R.elevenLabs]
+      { id: "everyday", name: "Everyday user", question: "How can AI help me day to day, and when can I trust it?", who: "Anyone using chat assistants to learn, write, plan or just explore.", groups: [
+        { name: "Getting started", items: [
+          ["choose-assistant", "Choosing an assistant", "Chat apps differ in strengths, privacy and price.", R.mollickRightNow],
+          ["follow-ups", "Asking follow-up questions", "Treat it as a conversation and refine, rather than starting over.", R.mollickPrompting],
+          ["multimodal-input", "Files, photos and voice", "Many assistants can read documents, look at images and talk.", R.ibmMultimodal]
         ] },
-        { name: "Craft", items: [
-          ["describe-style", "Describing style and composition", "Precise words for light, mood and framing steer the result.", R.learnPrompting],
-          ["iterate", "Iterating and editing", "Generate many, pick the best, then refine. It's rarely right first time.", R.mollickPrompting],
-          ["mix-own-work", "Mixing AI with your own work", "Use AI for parts of the process and keep your hand in the rest.", null]
+        { name: "Everyday uses", items: [
+          ["learning", "Learning and explanations", "Ask for simpler words, examples or a quiz on any topic.", R.mollick15],
+          ["writing-help", "Writing and editing", "Drafts, rewrites and tone changes, with your own voice kept.", R.mollickPrompting],
+          ["planning", "Planning and research", "Trips, meals, budgets and comparisons, with the facts checked.", R.mollickRightNow]
         ] },
-        { name: "Rights and credit", items: [
-          ["copyright", "Copyright and AI", "Who owns AI-assisted work, and what training on others' work means.", R.copyrightOffice],
-          ["licensing", "Licensing and commercial use", "Check each tool's terms before you sell what you make.", null],
-          ["labelling", "Labelling AI-made content", "Content Credentials show how a piece of media was made.", R.contentCredentials]
+        { name: "Staying safe", items: [
+          ["verify", "Checking answers", "Ask for sources and verify anything important somewhere else.", R.ibmHallucinations],
+          ["deepfakes", "Spotting deepfakes and scams", "AI makes fake voices, images and messages cheap to produce.", R.ftcVoice],
+          ["privacy-settings", "Privacy settings", "Know what the app keeps, and turn off what you don't want kept.", R.stanfordChatbot]
         ] }
-      ], links: [R.copyrightOffice, R.contentCredentials], related: ["everyday", "safety", "product"] }
+      ], links: [R.mollickRightNow, R.elementsOfAi], related: ["professional", "creator", "safety"] }
     ] }
   ];
 
