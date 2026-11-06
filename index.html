@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
 <style>
-/* Layout idea: shared basics first, then a 3x3 map of perspectives (three families: build, shape, use), then the selected perspective in full. */
+/* Layout idea: shared basics first, then three tabs (build, shape, use); a tab reveals its perspectives, and a perspective opens in full below. */
 :root {
   --bg: #f5f5f2;
   --surface: #ffffff;
@@ -68,12 +68,15 @@ input:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid 
 .links { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 14px 0 0; padding: 12px 0 0; border-top: 1px solid var(--line); font-size: 13px; }
 .links span { color: var(--muted); }
 .links a { color: var(--c); text-underline-offset: 2px; text-decoration-thickness: 1px; }
-.map { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(4, auto); grid-auto-flow: column; gap: 10px 16px; }
-.family { display: contents; }
-.family-head { align-self: start; }
-.family-head { padding-bottom: 2px; }
-.family-head h3 { margin: 0; font-family: var(--font-display); font-size: 19px; font-weight: 600; color: var(--c); }
-.family-head p { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+.tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid var(--line); }
+a.tab { display: grid; gap: 2px; padding: 10px 12px 12px 0; text-decoration: none; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+a.tab:hover { border-bottom-color: var(--line); }
+a.tab[aria-current="true"] { border-bottom-color: var(--c); }
+.tab-name { font-family: var(--font-display); font-size: 21px; font-weight: 600; color: var(--c); }
+.tab-meta { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.family-lead { margin: 16px 0 0; color: var(--muted); max-width: 66ch; }
+.hint { margin: 16px 0 0; color: var(--muted); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 14px; }
 a.card { display: grid; grid-template-rows: auto 1fr auto; gap: 8px; text-decoration: none; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; }
 a.card:hover { border-color: var(--c); }
 a.card[aria-current="true"] { border-color: var(--c); background: var(--bg); }
@@ -99,14 +102,14 @@ a.card[aria-current="true"] .card-name { color: var(--c); }
 footer { color: var(--muted); font-size: 13px; max-width: 70ch; display: grid; gap: 6px; }
 footer a { text-underline-offset: 2px; }
 @media (max-width: 900px) {
-  .map { grid-template-columns: 1fr; grid-template-rows: none; grid-auto-flow: row; }
   .groups { grid-template-columns: 1fr; }
-  .family-head { margin-top: 14px; }
   .basics .concepts { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 560px) {
   .basics .concepts { grid-template-columns: 1fr; }
   .intro h1 { font-size: 30px; }
+  .tab-name { font-size: 18px; }
+  .tab-meta { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .bar span { transition: none; } }
 </style>
@@ -319,7 +322,14 @@ footer a { text-underline-offset: 2px; }
   function countDone(list) { return list.filter(function (i) { return done.has(i); }).length; }
   function allIds() { var a = BASICS.items.map(function (i) { return i[0]; }); Object.keys(PERSONAS).forEach(function (k) { a = a.concat(itemIds(PERSONAS[k].groups)); }); return a; }
 
-  function current() { var h = location.hash.replace("#", ""); return PERSONAS[h] ? h : "everyday"; }
+  var FAMILY = {};
+  FAMILIES.forEach(function (f) { FAMILY[f.id] = f; });
+  function route() {
+    var h = location.hash.replace("#", "");
+    if (PERSONAS[h]) return { fam: PERSONAS[h].family, sel: PERSONAS[h] };
+    if (FAMILY[h]) return { fam: FAMILY[h], sel: null };
+    return { fam: null, sel: null };
+  }
 
   function conceptList(items) {
     return el("ul", { class: "concepts" }, items.map(function (i) {
@@ -339,7 +349,7 @@ footer a { text-underline-offset: 2px; }
   }
 
   function render(focusId, scroll) {
-    var sel = PERSONAS[current()];
+    var r = route(), fam = r.fam, sel = r.sel;
     var all = allIds(), total = countDone(all);
 
     var reset = el("button", { class: "reset" + (armed ? " armed" : ""), type: "button", id: "reset", text: armed ? "Click again to clear all ticks" : "Clear ticks" });
@@ -371,23 +381,29 @@ footer a { text-underline-offset: 2px; }
     var map = el("section", { "aria-labelledby": "map-h" }, [
       el("div", { class: "section-head" }, [
         el("h2", { id: "map-h", text: "Pick a way to look at AI" }),
-        el("p", { text: "They run from building AI, to shaping how it's built and governed, to using it. None is the right one. Most people end up with two or three." })
+        el("p", { text: "Do you want to build AI, shape how it's built and governed, or use it? Choose one to see the perspectives inside it. Most people end up with two or three." })
       ]),
-      el("div", { class: "map" }, FAMILIES.map(function (f) {
-        return el("div", { class: "family", style: "--c:" + f.color }, [
-          el("div", { class: "family-head" }, [el("h3", { text: f.name }), el("p", { text: f.blurb })])
-        ].concat(f.personas.map(function (p) {
-          var ids = itemIds(p.groups), d = countDone(ids), pct = Math.round(d / ids.length * 100);
-          return el("a", { class: "card", href: "#" + p.id, "aria-current": p === sel ? "true" : "false" }, [
-            el("span", { class: "card-name", text: p.name }),
-            el("span", { class: "q", text: p.question }),
-            el("span", { class: "prog" }, [el("span", { class: "bar", "aria-hidden": "true" }, [el("span", { style: "width:" + pct + "%" })]), el("span", { text: d + "/" + ids.length })])
-          ]);
-        })));
+      el("nav", { class: "tabs", "aria-label": "Ways to look at AI" }, FAMILIES.map(function (f) {
+        var ids = []; f.personas.forEach(function (p) { ids = ids.concat(itemIds(p.groups)); });
+        var n = f.personas.length;
+        return el("a", { class: "tab", href: "#" + f.id, style: "--c:" + f.color, "aria-current": fam === f ? "true" : "false" }, [
+          el("span", { class: "tab-name", text: f.name }),
+          el("span", { class: "tab-meta", text: n + (n === 1 ? " perspective" : " perspectives") + ", " + countDone(ids) + " of " + ids.length + " known" })
+        ]);
       }))
-    ]);
+    ].concat(fam ? [
+      el("p", { class: "family-lead", text: fam.blurb }),
+      el("div", { class: "cards", style: "--c:" + fam.color }, fam.personas.map(function (p) {
+        var ids = itemIds(p.groups), d = countDone(ids), pct = Math.round(d / ids.length * 100);
+        return el("a", { class: "card", href: "#" + p.id, "aria-current": p === sel ? "true" : "false" }, [
+          el("span", { class: "card-name", text: p.name }),
+          el("span", { class: "q", text: p.question }),
+          el("span", { class: "prog" }, [el("span", { class: "bar", "aria-hidden": "true" }, [el("span", { style: "width:" + pct + "%" })]), el("span", { text: d + "/" + ids.length })])
+        ]);
+      }))
+    ] : [el("p", { class: "hint", text: "Choose one above to see its perspectives." })]));
 
-    var detail = el("section", { class: "panel detail", id: "perspective", style: "--c:" + sel.family.color, "aria-labelledby": "detail-h" }, [
+    var detail = sel ? el("section", { class: "panel detail", id: "perspective", style: "--c:" + sel.family.color, "aria-labelledby": "detail-h" }, [
       el("div", { class: "detail-head" }, [
         el("span", { class: "tag", text: sel.family.name }),
         el("h2", { id: "detail-h", text: sel.name }),
@@ -402,25 +418,25 @@ footer a { text-underline-offset: 2px; }
         ]);
       })),
       linkRow(sel.links, "Start with:"),
-      el("div", { class: "related" }, [el("span", { text: "Also look at:" })].concat(sel.related.map(function (r) {
+      el("div", { class: "related" }, [el("span", { text: "Also look at:" })].concat(sel.related.filter(function (r) { return PERSONAS[r]; }).map(function (r) {
         return el("a", { href: "#" + r, text: PERSONAS[r].name });
       })))
-    ]);
+    ]) : null;
 
     var footer = el("footer", null, [
       el("p", null, ["Some resources were picked from the ", el("a", { href: "https://github.com/louisfb01/start-ai-engineering", target: "_blank", rel: "noopener", text: "start-ai-engineering" }), " roadmap. Suggestions welcome on ", el("a", { href: "https://github.com/and/ai-map", target: "_blank", rel: "noopener", text: "GitHub" }), "."])
     ]);
 
-    app.replaceChildren(intro, basics, map, detail, footer);
+    app.replaceChildren.apply(app, [intro, basics, map, detail, footer].filter(Boolean));
     if (focusId) { var f = document.getElementById(focusId); if (f) f.focus({ preventScroll: true }); }
-    if (scroll) {
+    if (scroll && detail) {
       var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       detail.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
     }
   }
 
-  window.addEventListener("hashchange", function () { render(null, true); });
-  render(null, !!PERSONAS[location.hash.replace("#", "")]);
+  window.addEventListener("hashchange", function () { render(null, !!route().sel); });
+  render(null, !!route().sel);
 })();
 </script>
 </body>

@@ -20,11 +20,23 @@ Everyone starts with six shared basics: what AI, machine learning and LLMs are, 
 | Use AI | Professional at work | How do I use AI to do my job better? |
 | Use AI | Creator | How do I make images, video, music and writing with AI? |
 
-Each perspective has nine concepts in three groups, a few free resources to start with, and links to related perspectives. That's 87 concepts in all.
+The page opens on three tabs: Build AI, Shape AI and Use AI. Choosing one shows the perspectives inside it, and choosing a perspective opens its concepts. Each perspective has nine concepts in three groups, a few free resources to start with, and links to related perspectives. That's 87 concepts in all.
 
 ## How it works
 
-It's one `index.html` file, with no build step and no dependencies apart from Google Fonts. Ticks are saved in your own browser's local storage and never leave it. To link to a specific perspective, add its name to the URL, for example `#researcher`.
+It's one `index.html` file, with no build step and no dependencies apart from Google Fonts. Ticks are saved in your own browser's local storage and never leave it. To link to a tab or a perspective, add its id to the URL, for example `#build` or `#researcher`.
+
+## Adding a perspective
+
+Perspectives live in the `FAMILIES` list near the top of the script in `index.html`. To add one, such as a forward deployed engineer, add an object to a family's `personas` array with:
+
+- `id`: a short URL-safe name, used in links (`#forward-deployed`)
+- `name`, `question` and `who`
+- `groups`: an array of `{ name, items }`, where each item is `[id, name, one-line explanation]`. Concept ids must be unique across the page.
+- `links`: starter resources as `[title, url]`
+- `related`: ids of other perspectives to suggest
+
+The tabs, cards and progress counts update by themselves.
 
 ## Contributing
 
